@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package auth;
+
+service AuthService {
+	rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {}
+}
+
+enum UserRole {
+	USER = 0;
+	OPERATOR = 1;
+	AUDITOR = 2;
+	ADMIN = 3;
+}
+
+message CreateUserRequest {
+	string email = 1;
+    string password = 2;
+	string role = 3;
+}
+
+message CreateUserResponse {
+    string email = 2;
+}
