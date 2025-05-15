@@ -1,8 +1,88 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { ConfigService } from '@nestjs/config';
+import { ClassSerializerInterceptor, Logger, ValidationPipe } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { HttpSuccessInterceptor } from './common/interceptor/http/http.success.interceptor';
+import { ExceptionFilter } from './common/filter/exception.filter';
 import { GatewayModule } from './gateway.module';
 
-async function bootstrap() {
-  const app = await NestFactory.create(GatewayModule);
-  await app.listen(process.env.port ?? 3000);
+class Server {
+    private configService: ConfigService;
+
+    constructor(private readonly app: NestExpressApplication) {
+        this.app = app;
+        this.init();
+    }
+
+    private init() {
+        this.configService = this.app.get<ConfigService>(ConfigService);
+
+        this.setupCors();
+        this.setupSwagger();
+        this.setupGlobalInterceptor();
+        this.setupGlobalFilter();
+        this.setupGlobalPipe();
+    }
+
+    private setupSwagger() {
+        const config = new DocumentBuilder()
+            .setTitle(this.configService.get<string>('SWAGGER_TITLE'))
+            .setDescription(this.configService.get<string>('SWAGGER_DESCRIPTION'))
+            .setVersion(this.configService.get<string>('SWAGGER_VERSION'))
+            .build();
+
+        const document = SwaggerModule.createDocument(this.app, config);
+        SwaggerModule.setup(this.configService.get<string>('SWAGGER_PATH'), this.app, document);
+    }
+
+    private setupCors() {
+        this.app.enableCors({
+            origin: '*',
+            methods: 'GET,POST,PUT,PATCH,DELETE',
+        });
+    }
+
+    private setupGlobalInterceptor() {
+        this.app.useGlobalInterceptors(
+            new ClassSerializerInterceptor(this.app.get(Reflector)),
+            new HttpSuccessInterceptor(),
+        );
+    }
+
+    private setupGlobalFilter() {
+        this.app.useGlobalFilters(new ExceptionFilter());
+    }
+
+    private setupGlobalPipe() {
+        this.app.useGlobalPipes(
+            new ValidationPipe({
+                transform: true,
+                whitelist: true,
+                forbidNonWhitelisted: false,
+            }),
+        );
+    }
+
+    async start(): Promise<void> {
+        await this.app.listen(this.configService.get<number>('HTTP_PORT'));
+    }
 }
-bootstrap();
+
+async function bootstrap(): Promise<void> {
+    const app = await NestFactory.create<NestExpressApplication>(GatewayModule);
+    const server = new Server(app);
+    await server.start();
+}
+
+bootstrap()
+    .then(() => {
+        if (process.env.NODE_ENV === 'production') {
+            process.send('ready');
+        }
+
+        new Logger(process.env.NODE_ENV).log(`✅ Server on http://${process.env.HTTP_HOST}:${process.env.HTTP_PORT}`);
+    })
+    .catch(error => {
+        new Logger(process.env.NODE_ENV).error(`❌ Server error ${error}`);
+    });
