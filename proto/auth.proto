@@ -4,6 +4,7 @@ package auth;
 
 service AuthService {
 	rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {}
+	rpc SigninUser(SigninUserRequest) returns (SigninUserResponse) {}	
 }
 
 enum UserRole {
@@ -16,9 +17,19 @@ enum UserRole {
 message CreateUserRequest {
 	string email = 1;
     string password = 2;
-	string role = 3;
+	UserRole role = 3;
 }
 
 message CreateUserResponse {
     string email = 2;
+}
+
+message SigninUserRequest {
+    string email = 1;
+    string password = 2;
+}
+
+message SigninUserResponse {
+    string accessToken = 1;
+    string refreshToken = 2;
 }

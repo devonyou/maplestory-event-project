@@ -22,17 +22,29 @@ export enum UserRole {
 export interface CreateUserRequest {
   email: string;
   password: string;
-  role: string;
+  role: UserRole;
 }
 
 export interface CreateUserResponse {
   email: string;
 }
 
+export interface SigninUserRequest {
+  email: string;
+  password: string;
+}
+
+export interface SigninUserResponse {
+  accessToken: string;
+  refreshToken: string;
+}
+
 export const AUTH_PACKAGE_NAME = "auth";
 
 export interface AuthServiceClient {
   createUser(request: CreateUserRequest, metadata?: Metadata): Observable<CreateUserResponse>;
+
+  signinUser(request: SigninUserRequest, metadata?: Metadata): Observable<SigninUserResponse>;
 }
 
 export interface AuthServiceController {
@@ -40,11 +52,16 @@ export interface AuthServiceController {
     request: CreateUserRequest,
     metadata?: Metadata,
   ): Promise<CreateUserResponse> | Observable<CreateUserResponse> | CreateUserResponse;
+
+  signinUser(
+    request: SigninUserRequest,
+    metadata?: Metadata,
+  ): Promise<SigninUserResponse> | Observable<SigninUserResponse> | SigninUserResponse;
 }
 
 export function AuthServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["createUser"];
+    const grpcMethods: string[] = ["createUser", "signinUser"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("AuthService", method)(constructor.prototype[method], method, descriptor);

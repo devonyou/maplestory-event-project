@@ -1,10 +1,12 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import validationSchema from './common/config/validation.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserDocument, UserSchema } from './document/user.document';
+import { JwtService } from '@nestjs/jwt';
+import mongoose from 'mongoose';
+import validationSchema from './common/config/validation.schema';
 
 @Module({
     imports: [
@@ -24,6 +26,12 @@ import { UserDocument, UserSchema } from './document/user.document';
         MongooseModule.forFeature([{ name: UserDocument.name, schema: UserSchema }]),
     ],
     controllers: [AuthController],
-    providers: [AuthService],
+    providers: [AuthService, JwtService],
 })
-export class AuthModule {}
+export class AuthModule implements OnModuleInit {
+    constructor(private readonly configService: ConfigService) {}
+
+    onModuleInit() {
+        mongoose.set('debug', this.configService.get<string>('NODE_ENV') !== 'production');
+    }
+}

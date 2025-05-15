@@ -13,4 +13,12 @@ export class AuthController implements AuthMicroService.AuthServiceController {
             email: result.email,
         };
     }
+
+    async signinUser(request: AuthMicroService.SigninUserRequest): Promise<AuthMicroService.SigninUserResponse> {
+        const result = await this.authService.signinUser(request);
+        return {
+            accessToken: result.accessToken,
+            refreshToken: result.refreshToken,
+        };
+    }
 }

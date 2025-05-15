@@ -3,6 +3,7 @@ import { AuthMicroService } from '@app/repo';
 import { ClientGrpc } from '@nestjs/microservices';
 import { SignupRequest } from './dto/signup.dto';
 import { lastValueFrom } from 'rxjs';
+import { SigninRequest } from './dto/signin.dto';
 
 @Injectable()
 export class GatewayAuthService implements OnModuleInit {
@@ -19,6 +20,12 @@ export class GatewayAuthService implements OnModuleInit {
 
     async signup(body: SignupRequest) {
         const stream = this.authService.createUser(body);
+        const result = await lastValueFrom(stream);
+        return result;
+    }
+
+    async signin(body: SigninRequest) {
+        const stream = this.authService.signinUser(body);
         const result = await lastValueFrom(stream);
         return result;
     }
