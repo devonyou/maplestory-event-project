@@ -29,4 +29,16 @@ export class GatewayAuthService implements OnModuleInit {
         const result = await lastValueFrom(stream);
         return result;
     }
+
+    async findUsers() {
+        const stream = this.authService.findUsers({});
+        const result = await lastValueFrom(stream);
+        return result;
+    }
+
+    async verifyToken(jwtToken: string, isRefresh: boolean) {
+        const stream = this.authService.verifyToken({ jwtToken, isRefresh });
+        const result = await lastValueFrom(stream);
+        return result;
+    }
 }

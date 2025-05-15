@@ -6,6 +6,9 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { HttpSuccessInterceptor } from './common/interceptor/http/http.success.interceptor';
 import { ExceptionFilter } from './common/filter/exception.filter';
 import { GatewayModule } from './gateway.module';
+import { AuthGuard } from './modules/auth/guard/auth.guard';
+import { GatewayAuthService } from './modules/auth/gateway.auth.service';
+import { RoleGuard } from './modules/auth/guard/role.guard';
 
 class Server {
     private configService: ConfigService;
@@ -22,6 +25,7 @@ class Server {
         this.setupSwagger();
         this.setupGlobalInterceptor();
         this.setupGlobalFilter();
+        this.setupGlobalGuard();
         this.setupGlobalPipe();
     }
 
@@ -61,6 +65,13 @@ class Server {
                 whitelist: true,
                 forbidNonWhitelisted: false,
             }),
+        );
+    }
+
+    private setupGlobalGuard() {
+        this.app.useGlobalGuards(
+            new AuthGuard(this.app.get(GatewayAuthService), this.app.get(Reflector)),
+            new RoleGuard(this.app.get(Reflector)),
         );
     }
 

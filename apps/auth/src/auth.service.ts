@@ -1,9 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { UserDocument } from './document/user.document';
+import { UserDocument, UserRole } from './document/user.document';
 import { compare, hash } from 'bcrypt';
-import { GrpcAlreadyExistsException, GrpcNotFoundException } from 'nestjs-grpc-exceptions';
+import {
+    GrpcAlreadyExistsException,
+    GrpcNotFoundException,
+    GrpcUnauthenticatedException,
+} from 'nestjs-grpc-exceptions';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { AuthMicroService } from '@app/repo';
@@ -41,7 +45,7 @@ export class AuthService {
         const user = await this.userModel.create({
             ...dto,
             password: await hash(dto.password, 10),
-            role: dto.role,
+            role: UserRole.USER,
         });
 
         return user;
@@ -99,5 +103,38 @@ export class AuthService {
             secret: isRefresh ? this.REFRESH_SECRET : this.ACCESS_SECRET,
             expiresIn: isRefresh ? this.REFRESH_EXPIRE_IN : this.ACCESS_EXPIRE_IN,
         });
+    }
+
+    /**
+     * 유저 목록 조회
+     * @param dto 유저 목록 조회에 필요한 정보 (검색 조건)
+     * @returns 조회된 유저 목록
+     */
+    async findUsers(dto: AuthMicroService.FindUsersRequest): Promise<UserDocument[]> {
+        const users = await this.userModel.find(dto).sort({ role: 1 });
+        return users;
+    }
+
+    /**
+     * 토큰 검증
+     * @param dto 토큰 검증에 필요한 정보 (토큰, 리프레시 토큰 여부)
+     * @returns 검증된 토큰 정보
+     * @throws GrpcUnauthenticatedException 토큰이 유효하지 않은 경우
+     */
+    async verifyToken(dto: { jwtToken: string; isRefresh: boolean }): Promise<AuthMicroService.VerifyTokenResponse> {
+        const { jwtToken, isRefresh } = dto;
+
+        try {
+            const payload = await this.jwtService.verifyAsync(jwtToken, {
+                secret: isRefresh ? this.REFRESH_SECRET : this.ACCESS_SECRET,
+                ignoreExpiration: false,
+            });
+            return {
+                verify: true,
+                user: payload,
+            };
+        } catch (err) {
+            throw new GrpcUnauthenticatedException(err.message);
+        }
     }
 }

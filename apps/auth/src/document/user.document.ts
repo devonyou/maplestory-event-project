@@ -18,6 +18,12 @@ export class UserDocument extends Document<ObjectId> {
 
     @Prop({ required: true, enum: UserRole })
     role: UserRole;
+
+    @Prop()
+    createdAt: Date;
+
+    @Prop()
+    updatedAt: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserDocument);

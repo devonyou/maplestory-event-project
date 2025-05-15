@@ -9,16 +9,28 @@ export class AuthController implements AuthMicroService.AuthServiceController {
 
     async createUser(request: AuthMicroService.CreateUserRequest): Promise<AuthMicroService.CreateUserResponse> {
         const result = await this.authService.createUser(request);
-        return {
-            email: result.email,
-        };
+        return result;
     }
 
     async signinUser(request: AuthMicroService.SigninUserRequest): Promise<AuthMicroService.SigninUserResponse> {
         const result = await this.authService.signinUser(request);
+        return result;
+    }
+
+    async findUsers(request: AuthMicroService.FindUsersRequest): Promise<AuthMicroService.FindUsersResponse> {
+        const result = await this.authService.findUsers(request);
         return {
-            accessToken: result.accessToken,
-            refreshToken: result.refreshToken,
+            users: result.map(user => ({
+                email: user.email,
+                role: user.role,
+                createdAt: user.createdAt.toISOString(),
+                updatedAt: user.updatedAt.toISOString(),
+            })),
         };
+    }
+
+    async verifyToken(request: AuthMicroService.VerifyTokenRequest): Promise<AuthMicroService.VerifyTokenResponse> {
+        const result = await this.authService.verifyToken(request);
+        return result;
     }
 }
