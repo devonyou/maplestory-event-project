@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsEmail, IsEnum, IsString, MaxLength, MinLength } from 'class-validator';
 import { UserRole } from '../../../types/user.role';
 
 export class SignupRequest {
-    @ApiProperty({ description: '이메일', type: String, example: 'test@test.com' })
+    @ApiProperty({ description: '이메일', type: String, example: 'admin@nexon.com' })
     @IsEmail({}, { message: '이메일 형식이 올바르지 않습니다.' })
     email: string;
 
@@ -13,16 +13,15 @@ export class SignupRequest {
     @MaxLength(20, { message: '비밀번호는 최대 20자 이하여야 합니다.' })
     password: string;
 
-    // @ApiProperty({ description: '권한', type: Number, example: UserRole.USER, enum: UserRole })
-    // @IsEnum(UserRole, { message: `올바른 Role 값이 아닙니다. [0:USER, 1:OPERATOR, 2:AUDITOR, 3:ADMIN]` })
-    // @IsOptional()
-    // role?: UserRole;
+    @ApiProperty({ description: '권한', type: Number, example: UserRole.ADMIN, enum: UserRole })
+    @IsEnum(UserRole, { message: `올바른 Role 값이 아닙니다. [0:USER, 1:OPERATOR, 2:AUDITOR, 3:ADMIN]` })
+    role: UserRole;
 }
 
 export class SignupResponse {
-    @ApiProperty({ description: '이메일', type: String, example: 'test@test.com' })
+    @ApiProperty({ description: '이메일', type: String, example: 'admin@nexon.com' })
     email: string;
 
-    @ApiProperty({ description: '권한', type: Number, example: UserRole.USER, enum: UserRole })
+    @ApiProperty({ description: '권한', type: Number, example: UserRole.ADMIN, enum: UserRole })
     role: UserRole;
 }

@@ -4,10 +4,10 @@ import { Type } from 'class-transformer';
 import { UserRole } from '@app/repo/grpc/proto/auth';
 
 export class User {
-    @ApiProperty({ description: '이메일', type: String, example: 'test@test.com' })
+    @ApiProperty({ description: '이메일', type: String, example: 'amin@nexon.com' })
     email: string;
 
-    @ApiProperty({ description: '권한', type: Number, example: 0, enum: UserRole })
+    @ApiProperty({ description: '권한', type: Number, example: UserRole.ADMIN, enum: UserRole })
     role: UserRole;
 }
 

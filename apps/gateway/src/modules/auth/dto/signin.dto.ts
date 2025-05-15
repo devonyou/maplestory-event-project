@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsString } from 'class-validator';
 
 export class SigninRequest {
-    @ApiProperty({ description: '이메일', type: String, example: 'test@test.com' })
+    @ApiProperty({ description: '이메일', type: String, example: 'admin@nexon.com' })
     @IsEmail({}, { message: '이메일 형식이 올바르지 않습니다.' })
     email: string;
 

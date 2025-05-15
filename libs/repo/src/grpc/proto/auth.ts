@@ -29,6 +29,7 @@ export interface User {
 export interface CreateUserRequest {
   email: string;
   password: string;
+  role: UserRole;
 }
 
 export interface CreateUserResponse {
