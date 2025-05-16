@@ -43,7 +43,7 @@ export class GatewayAuthController {
 
     @Post('refresh')
     @Auth({ isRefresh: true })
-    @ApiResponse({ status: 201, description: '[전체] 토큰 갱신' })
+    @ApiResponse({ status: 201, description: '[전체] 토큰 갱신', type: SigninResponse })
     refreshToken(@User() user: JwtPayload): Promise<SigninResponse> {
         return this.authService.refreshToken(user);
     }
