@@ -3,16 +3,44 @@ syntax = "proto3";
 package event;
 
 service EventService {
-    rpc CreateEvent(CreateEventRequest) returns (CreateEventResponse) {}
+    rpc CreateEvent(CreateEventRequest) returns (CreateEventResponse);
+}
+
+enum EventConditionType {
+    ATTENDANCE = 0;
+    CLEAR_BOSS = 1;
+}
+
+enum EventRewardType {
+    MAPLE_POINT = 0;
+    MAPLE_COIN = 1;
+}
+
+message EventCondition {
+    EventConditionType type = 1;
+    map<string, string> payload = 2;
+}
+
+message EventReward {
+    EventRewardType type = 1;
+    int32 amount = 2;
 }
 
 message CreateEventRequest {
-    string name = 1;
-    string description = 2;
+    string title = 1;
+    EventCondition eventCondition = 2;
+    repeated EventReward eventRewardItems = 3;
+    string startDate = 4;
+    string endDate = 5;
+    bool isActive = 6;
 }
 
 message CreateEventResponse {
     string id = 1;
-    string name = 2;
-    string description = 3;
+    string title = 2;
+    EventCondition eventCondition = 3;
+    repeated EventReward eventRewardItems = 4;
+    string startDate = 5;
+    string endDate = 6;
+    bool isActive = 7;
 }

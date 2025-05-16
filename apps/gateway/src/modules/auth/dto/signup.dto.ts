@@ -1,6 +1,6 @@
+import { UserRole } from '@app/repo';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsEnum, IsString, MaxLength, MinLength } from 'class-validator';
-import { UserRole } from '../../../types/user.role';
 
 export class SignupRequest {
     @ApiProperty({ description: '이메일', type: String, example: 'admin@nexon.com' })

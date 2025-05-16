@@ -9,7 +9,7 @@ import {
     GrpcUnauthenticatedException,
 } from 'nestjs-grpc-exceptions';
 import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
+import { JsonWebTokenError, JwtService } from '@nestjs/jwt';
 import { AuthMicroService } from '@app/repo';
 
 @Injectable()
@@ -125,11 +125,17 @@ export class AuthService {
      */
     async verifyToken(dto: { jwtToken: string; isRefresh: boolean }): Promise<AuthMicroService.VerifyTokenResponse> {
         const { jwtToken, isRefresh } = dto;
-
-        const payload = await this.jwtService.verifyAsync(jwtToken, {
-            secret: isRefresh ? this.REFRESH_SECRET : this.ACCESS_SECRET,
-            ignoreExpiration: false,
-        });
+        let payload;
+        try {
+            payload = await this.jwtService.verifyAsync(jwtToken, {
+                secret: isRefresh ? this.REFRESH_SECRET : this.ACCESS_SECRET,
+                ignoreExpiration: false,
+            });
+        } catch (error) {
+            if (error instanceof JsonWebTokenError) {
+                throw new GrpcUnauthenticatedException('토큰이 유효하지 않습니다.');
+            }
+        }
 
         if (!isRefresh) {
             const user = await this.userModel.findOne({ _id: payload.sub });

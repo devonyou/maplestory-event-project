@@ -11,15 +11,50 @@ import { Observable } from "rxjs";
 
 export const protobufPackage = "event";
 
+export enum EventConditionType {
+  ATTENDANCE = 0,
+  CLEAR_BOSS = 1,
+  UNRECOGNIZED = -1,
+}
+
+export enum EventRewardType {
+  MAPLE_POINT = 0,
+  MAPLE_COIN = 1,
+  UNRECOGNIZED = -1,
+}
+
+export interface EventCondition {
+  type: EventConditionType;
+  payload: { [key: string]: string };
+}
+
+export interface EventCondition_PayloadEntry {
+  key: string;
+  value: string;
+}
+
+export interface EventReward {
+  type: EventRewardType;
+  amount: number;
+}
+
 export interface CreateEventRequest {
-  name: string;
-  description: string;
+  title: string;
+  eventCondition: EventCondition | undefined;
+  eventRewardItems: EventReward[];
+  startDate: string;
+  endDate: string;
+  isActive: boolean;
 }
 
 export interface CreateEventResponse {
   id: string;
-  name: string;
-  description: string;
+  title: string;
+  eventCondition: EventCondition | undefined;
+  eventRewardItems: EventReward[];
+  startDate: string;
+  endDate: string;
+  isActive: boolean;
 }
 
 export const EVENT_PACKAGE_NAME = "event";

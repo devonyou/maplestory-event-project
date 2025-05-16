@@ -6,9 +6,9 @@ import { SigninRequest, SigninResponse } from './dto/signin.dto';
 import { FindUsersResponse, UpdateUserRequest, UpdateUserResponse } from './dto/user.dto';
 import { Auth } from './decorator/auth.guard.decorator';
 import { Roles } from './decorator/roles.guard.decorator';
-import { UserRole } from '../../types/user.role';
 import { JwtPayload } from '../../types/jwt.payload';
 import { User } from './decorator/user.decorator';
+import { UserRole } from '@app/repo';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -34,7 +34,7 @@ export class GatewayAuthController {
     }
 
     @Patch('')
-    @Auth({ isRefresh: false })
+    @Auth()
     @Roles([UserRole.ADMIN])
     @ApiResponse({ status: 200, description: '[ADMIN] 유저 정보(권한) 수정', type: UpdateUserResponse })
     updateUser(@Body() body: UpdateUserRequest): Promise<UpdateUserResponse> {

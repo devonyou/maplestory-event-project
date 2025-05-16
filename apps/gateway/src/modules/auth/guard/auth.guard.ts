@@ -3,7 +3,7 @@ import { GatewayAuthService } from '../gateway.auth.service';
 import { Reflector } from '@nestjs/core';
 import { Auth as AuthDecorator } from '../decorator/auth.guard.decorator';
 import { JwtPayload } from '../../../types/jwt.payload';
-import { UserRole } from '../../../types/user.role';
+import { UserRole } from '@app/repo';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -25,7 +25,7 @@ export class AuthGuard implements CanActivate {
             throw new UnauthorizedException();
         }
 
-        const isRefresh = authDecorator.isRefresh;
+        const isRefresh = authDecorator.isRefresh ?? false;
 
         const resp = await this.authService.verifyToken(jwtToken, isRefresh);
         if (!resp.verify) throw new UnauthorizedException();
