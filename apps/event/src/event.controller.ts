@@ -19,4 +19,16 @@ export class EventController implements EventMicroService.EventServiceController
             isActive: event.isActive,
         };
     }
+
+    async findEvents(request: EventMicroService.FindEventsRequest): Promise<EventMicroService.FindEventsResponse> {
+        const events = await this.eventService.findEvents(request);
+        return {
+            events: events.map(event => ({
+                id: event.id.toString(),
+                title: event.title,
+                eventCondition: event.eventCondition,
+                isActive: event.isActive,
+            })),
+        };
+    }
 }

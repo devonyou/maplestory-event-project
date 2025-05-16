@@ -3,6 +3,7 @@ import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { CreateEventRequest } from './dto/create.event.dto';
 import { lastValueFrom } from 'rxjs';
+import { FindEventRequest } from './dto/find.event.dto';
 
 @Injectable()
 export class GatewayEventService implements OnModuleInit {
@@ -32,6 +33,15 @@ export class GatewayEventService implements OnModuleInit {
                 type: EventRewardTypeToString[item.type],
                 amount: item.amount,
             })),
+        });
+        const result = await lastValueFrom(stream);
+        return result;
+    }
+
+    async findEvents(dto: FindEventRequest) {
+        const stream = this.eventService.findEvents({
+            isActive: dto.isActive,
+            status: dto.status,
         });
         const result = await lastValueFrom(stream);
         return result;

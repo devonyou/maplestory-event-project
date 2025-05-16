@@ -1,3 +1,5 @@
+import { EventStatus } from '../grpc/proto/event';
+
 export enum EventConditionType {
     ATTENDANCE = 'ATTENDANCE',
     CLEAR_BOSS = 'CLEAR_BOSS',
@@ -16,4 +18,10 @@ export enum EventRewardType {
 export const EventRewardTypeToString = {
     [EventRewardType.MAPLE_POINT]: 0,
     [EventRewardType.MAPLE_COIN]: 1,
+};
+
+export const EventStatusToString = {
+    [EventStatus.ACTIVE]: 0,
+    [EventStatus.INACTIVE]: 1,
+    [EventStatus.COMPLETED]: 2,
 };

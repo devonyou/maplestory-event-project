@@ -26,6 +26,7 @@ class EventCondition {
 
 class EventReward {
     @IsEnum(EventRewardType, { message: 'type이 올바르지 않습니다. (MAPLE_POINT, MAPLE_COIN)' })
+    @ApiProperty({ description: '보상 타입', type: String, example: 'MAPLE_POINT' })
     type: EventRewardType;
 
     @IsNumber()
