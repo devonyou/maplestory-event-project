@@ -33,4 +33,12 @@ export class AuthController implements AuthMicroService.AuthServiceController {
         const result = await this.authService.verifyToken(request);
         return result;
     }
+
+    updateUser(request: AuthMicroService.UpdateUserRequest): Promise<AuthMicroService.UpdateUserResponse> {
+        return this.authService.updateUser(request);
+    }
+
+    refreshToken(request: AuthMicroService.RefreshTokenRequest): Promise<AuthMicroService.RefreshTokenResponse> {
+        return this.authService.refreshToken(request);
+    }
 }

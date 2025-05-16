@@ -1,4 +1,4 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { UserRole } from '../../../types/user.role';
 import { Roles } from '../decorator/roles.guard.decorator';
@@ -17,6 +17,10 @@ export class RoleGuard implements CanActivate {
         if (!user) return false;
 
         const userRole = user.role;
-        return roles.includes(userRole);
+        if (roles.includes(userRole)) {
+            return true;
+        }
+
+        throw new ForbiddenException('권한이 없습니다.');
     }
 }

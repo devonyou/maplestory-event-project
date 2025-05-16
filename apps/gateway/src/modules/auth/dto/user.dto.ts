@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray } from 'class-validator';
+import { IsArray, IsEmail, IsEnum } from 'class-validator';
 import { Type } from 'class-transformer';
 import { UserRole } from '@app/repo/grpc/proto/auth';
 
 export class User {
-    @ApiProperty({ description: '이메일', type: String, example: 'amin@nexon.com' })
+    @ApiProperty({ description: '이메일', type: String, example: 'admin@nexon.com' })
     email: string;
 
     @ApiProperty({ description: '권한', type: Number, example: UserRole.ADMIN, enum: UserRole })
@@ -18,4 +18,22 @@ export class FindUsersResponse {
     @IsArray()
     @Type(() => User)
     users: User[];
+}
+
+export class UpdateUserRequest {
+    @ApiProperty({ description: '이메일', type: String, example: 'admin@nexon.com' })
+    @IsEmail()
+    email: string;
+
+    @ApiProperty({ description: '권한', type: Number, example: UserRole.ADMIN, enum: UserRole })
+    @IsEnum(UserRole)
+    role: UserRole;
+}
+
+export class UpdateUserResponse {
+    @ApiProperty({ description: '이메일', type: String, example: 'admin@nexon.com' })
+    email: string;
+
+    @ApiProperty({ description: '권한', type: Number, example: UserRole.ADMIN, enum: UserRole })
+    role: UserRole;
 }

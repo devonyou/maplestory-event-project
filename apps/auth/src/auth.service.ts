@@ -92,10 +92,11 @@ export class AuthService {
      */
     async issueTokenByUser(user: UserDocument, isRefresh: boolean): Promise<string> {
         const payload = {
-            sub: user._id,
+            sub: user._id.toString(),
             email: user.email,
             role: user.role,
             type: isRefresh ? 'refresh' : 'access',
+            tokenVersion: user.tokenVersion,
         };
 
         return this.jwtService.signAsync(payload, {
@@ -119,21 +120,59 @@ export class AuthService {
      * @param dto 토큰 검증에 필요한 정보 (토큰, 리프레시 토큰 여부)
      * @returns 검증된 토큰 정보
      * @throws GrpcUnauthenticatedException 토큰이 유효하지 않은 경우
+     * @throws GrpcUnauthenticatedException 존재하지 않는 유저인 경우
+     * @throws GrpcUnauthenticatedException 토큰버전이 만료된 경우
      */
     async verifyToken(dto: { jwtToken: string; isRefresh: boolean }): Promise<AuthMicroService.VerifyTokenResponse> {
         const { jwtToken, isRefresh } = dto;
 
-        try {
-            const payload = await this.jwtService.verifyAsync(jwtToken, {
-                secret: isRefresh ? this.REFRESH_SECRET : this.ACCESS_SECRET,
-                ignoreExpiration: false,
-            });
-            return {
-                verify: true,
-                user: payload,
-            };
-        } catch (err) {
-            throw new GrpcUnauthenticatedException(err.message);
+        const payload = await this.jwtService.verifyAsync(jwtToken, {
+            secret: isRefresh ? this.REFRESH_SECRET : this.ACCESS_SECRET,
+            ignoreExpiration: false,
+        });
+
+        if (!isRefresh) {
+            const user = await this.userModel.findOne({ _id: payload.sub });
+            if (!user) throw new GrpcUnauthenticatedException('존재하지 않는 유저입니다.');
+
+            if (user.tokenVersion !== payload.tokenVersion) {
+                throw new GrpcUnauthenticatedException('토큰버전이 만료되었습니다.');
+            }
         }
+        return {
+            verify: true,
+            payload: payload,
+        };
+    }
+
+    /**
+     * 유저 정보 수정
+     * @param request 유저 권한 수정에 필요한 정보 (이메일, 권한)
+     * @returns 수정된 유저 정보
+     * @throws GrpcNotFoundException 존재하지 않는 이메일인 경우
+     */
+    async updateUser(request: AuthMicroService.UpdateUserRequest) {
+        const { email, role } = request;
+
+        const user = await this.findUserByEmail(email);
+        if (!user) throw new GrpcNotFoundException('존재하지 않는 이메일입니다.');
+
+        user.role = role;
+        user.tokenVersion += 1;
+        await user.save();
+
+        return user;
+    }
+
+    async refreshToken(request: AuthMicroService.RefreshTokenRequest) {
+        const { userId } = request;
+
+        const user = await this.userModel.findOne({ _id: userId });
+        if (!user) throw new GrpcNotFoundException('존재하지 않는 유저입니다.');
+
+        return {
+            accessToken: await this.issueTokenByUser(user, false),
+            refreshToken: await this.issueTokenByUser(user, true),
+        };
     }
 }

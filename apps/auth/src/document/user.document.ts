@@ -1,12 +1,13 @@
 import { Document, ObjectId } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { UserRole } from '@app/repo/grpc/proto/auth';
 
-export enum UserRole {
-    USER = 0,
-    OPERATOR = 1,
-    AUDITOR = 2,
-    ADMIN = 3,
-}
+// export enum UserRole {
+//     USER = 0,
+//     OPERATOR = 1,
+//     AUDITOR = 2,
+//     ADMIN = 3,
+// }
 
 @Schema({ timestamps: true })
 export class UserDocument extends Document<ObjectId> {
@@ -18,6 +19,9 @@ export class UserDocument extends Document<ObjectId> {
 
     @Prop({ required: true, enum: UserRole })
     role: UserRole;
+
+    @Prop({ required: true, default: 0 })
+    tokenVersion: number;
 
     @Prop()
     createdAt: Date;

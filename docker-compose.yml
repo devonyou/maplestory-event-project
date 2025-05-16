@@ -12,6 +12,8 @@ services:
             - /usr/src/app/node_modules
         env_file:
             - ./apps/gateway/.env
+        depends_on:
+            - auth
 
     auth:
         build:
@@ -26,6 +28,11 @@ services:
             - /usr/src/app/node_modules
         env_file:
             - ./apps/auth/.env
+        depends_on:
+            mongo_auth:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
 
     mongo_auth:
         image: mongo:8
@@ -43,3 +50,18 @@ services:
             timeout: 5s
             retries: 10
             start_period: 5s
+
+    redis:
+        image: redis:7-alpine
+        ports:
+            - '6001:6379'
+        volumes:
+            - ./redis/data:/data
+            - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+        restart: always
+        command: redis-server /usr/local/etc/redis/redis.conf --appendonly yes
+        healthcheck:
+            test: ['CMD', 'redis-cli', 'ping']
+            interval: 5s
+            timeout: 3s
+            retries: 5

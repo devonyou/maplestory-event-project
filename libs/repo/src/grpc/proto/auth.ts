@@ -26,6 +26,14 @@ export interface User {
   updatedAt: string;
 }
 
+export interface TokenPayload {
+  sub: string;
+  email: string;
+  role: number;
+  tokenVersion: number;
+  type: string;
+}
+
 export interface CreateUserRequest {
   email: string;
   password: string;
@@ -61,7 +69,26 @@ export interface VerifyTokenRequest {
 
 export interface VerifyTokenResponse {
   verify: boolean;
-  user: User | undefined;
+  payload: TokenPayload | undefined;
+}
+
+export interface UpdateUserRequest {
+  email: string;
+  role: UserRole;
+}
+
+export interface UpdateUserResponse {
+  email: string;
+  role: UserRole;
+}
+
+export interface RefreshTokenRequest {
+  userId: string;
+}
+
+export interface RefreshTokenResponse {
+  accessToken: string;
+  refreshToken: string;
 }
 
 export const AUTH_PACKAGE_NAME = "auth";
@@ -74,6 +101,10 @@ export interface AuthServiceClient {
   findUsers(request: FindUsersRequest, metadata?: Metadata): Observable<FindUsersResponse>;
 
   verifyToken(request: VerifyTokenRequest, metadata?: Metadata): Observable<VerifyTokenResponse>;
+
+  updateUser(request: UpdateUserRequest, metadata?: Metadata): Observable<UpdateUserResponse>;
+
+  refreshToken(request: RefreshTokenRequest, metadata?: Metadata): Observable<RefreshTokenResponse>;
 }
 
 export interface AuthServiceController {
@@ -96,11 +127,28 @@ export interface AuthServiceController {
     request: VerifyTokenRequest,
     metadata?: Metadata,
   ): Promise<VerifyTokenResponse> | Observable<VerifyTokenResponse> | VerifyTokenResponse;
+
+  updateUser(
+    request: UpdateUserRequest,
+    metadata?: Metadata,
+  ): Promise<UpdateUserResponse> | Observable<UpdateUserResponse> | UpdateUserResponse;
+
+  refreshToken(
+    request: RefreshTokenRequest,
+    metadata?: Metadata,
+  ): Promise<RefreshTokenResponse> | Observable<RefreshTokenResponse> | RefreshTokenResponse;
 }
 
 export function AuthServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["createUser", "signinUser", "findUsers", "verifyToken"];
+    const grpcMethods: string[] = [
+      "createUser",
+      "signinUser",
+      "findUsers",
+      "verifyToken",
+      "updateUser",
+      "refreshToken",
+    ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("AuthService", method)(constructor.prototype[method], method, descriptor);

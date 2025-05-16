@@ -4,6 +4,8 @@ import { ClientGrpc } from '@nestjs/microservices';
 import { SignupRequest } from './dto/signup.dto';
 import { lastValueFrom } from 'rxjs';
 import { SigninRequest } from './dto/signin.dto';
+import { UpdateUserRequest } from './dto/user.dto';
+import { JwtPayload } from '../../types/jwt.payload';
 
 @Injectable()
 export class GatewayAuthService implements OnModuleInit {
@@ -38,6 +40,18 @@ export class GatewayAuthService implements OnModuleInit {
 
     async verifyToken(jwtToken: string, isRefresh: boolean) {
         const stream = this.authService.verifyToken({ jwtToken, isRefresh });
+        const result = await lastValueFrom(stream);
+        return result;
+    }
+
+    async updateUser(body: UpdateUserRequest) {
+        const stream = this.authService.updateUser(body);
+        const result = await lastValueFrom(stream);
+        return result;
+    }
+
+    async refreshToken(user: JwtPayload) {
+        const stream = this.authService.refreshToken({ userId: user.sub });
         const result = await lastValueFrom(stream);
         return result;
     }
