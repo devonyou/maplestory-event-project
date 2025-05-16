@@ -14,7 +14,7 @@ services:
             - ./apps/gateway/.env
         depends_on:
             - auth
-
+            - event
     auth:
         build:
             context: .
@@ -31,6 +31,23 @@ services:
         depends_on:
             mongo_auth:
                 condition: service_healthy
+
+    event:
+        build:
+            context: .
+            dockerfile: ./apps/event/Dockerfile
+            target: development
+        command: npm run start:dev event
+        ports:
+            - '3002:3000'
+        volumes:
+            - .:/usr/src/app
+            - /usr/src/app/node_modules
+        env_file:
+            - ./apps/event/.env
+        depends_on:
+            mongo_event:
+                condition: service_healthy
             redis:
                 condition: service_healthy
 
@@ -42,10 +59,27 @@ services:
         ports:
             - '5001:27017'
         volumes:
-            - ./mongo:/data/db
+            - ./mongo/auth:/data/db
         command: mongod --quiet --logpath /dev/null
         healthcheck:
             test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/auth --quiet
+            interval: 5s
+            timeout: 5s
+            retries: 10
+            start_period: 5s
+
+    mongo_event:
+        image: mongo:8
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: mongo
+            MONGO_INITDB_ROOT_PASSWORD: pass1234
+        ports:
+            - '5002:27017'
+        volumes:
+            - ./mongo/event:/data/db
+        command: mongod --quiet --logpath /dev/null
+        healthcheck:
+            test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/event --quiet
             interval: 5s
             timeout: 5s
             retries: 10

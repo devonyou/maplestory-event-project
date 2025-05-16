@@ -5,6 +5,7 @@ import { ClientsModule } from '@nestjs/microservices';
 import { grpcClients } from './common/grpc/grpc.client';
 import { GatewayAuthModule } from './modules/auth/gateway.auth.module';
 import { HttpLoggerMiddleware } from './common/logger/http.logger.middelware';
+import { GatewayEventModule } from './modules/event/gateway.event.module';
 
 @Module({
     imports: [
@@ -19,6 +20,7 @@ import { HttpLoggerMiddleware } from './common/logger/http.logger.middelware';
         }),
 
         GatewayAuthModule,
+        GatewayEventModule,
     ],
     controllers: [],
     providers: [],

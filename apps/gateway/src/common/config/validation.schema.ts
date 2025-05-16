@@ -9,4 +9,6 @@ export default Joi.object({
     SWAGGER_VERSION: Joi.string().required(),
     AUTH_GRPC_HOST: Joi.string().required(),
     AUTH_GRPC_PORT: Joi.number().required(),
+    EVENT_GRPC_HOST: Joi.string().required(),
+    EVENT_GRPC_PORT: Joi.number().required(),
 });
