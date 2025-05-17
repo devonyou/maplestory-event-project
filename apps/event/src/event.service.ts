@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { EventDocument } from './document/event.document';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
+import { GrpcNotFoundException } from 'nestjs-grpc-exceptions';
 
 @Injectable()
 export class EventService {
@@ -29,5 +30,17 @@ export class EventService {
         }
 
         return this.eventModel.find(filter).exec();
+    }
+
+    async findEventById(eventId: string) {
+        try {
+            const event = await this.eventModel.findById(eventId).exec();
+            if (!event) {
+                throw new GrpcNotFoundException('해당 ID의 이벤트가 존재하지 않습니다.');
+            }
+            return event;
+        } catch (error) {
+            throw new GrpcNotFoundException('해당 ID의 이벤트가 존재하지 않습니다.');
+        }
     }
 }

@@ -5,6 +5,7 @@ package event;
 service EventService {
     rpc CreateEvent(CreateEventRequest) returns (CreateEventResponse);
     rpc FindEvents(FindEventsRequest) returns (FindEventsResponse);
+    rpc FindEventById(FindEventByIdRequest) returns (FindEventByIdResponse);
 }
 
 enum EventConditionType {
@@ -23,7 +24,6 @@ enum EventStatus {
     COMPLETED = 2;
 }
 
-
 message EventCondition {
     EventConditionType type = 1;
     map<string, string> payload = 2;
@@ -38,6 +38,10 @@ message Event {
     string id = 1;
     string title = 2;
     bool isActive = 3;
+    EventCondition eventCondition = 4;
+    repeated EventReward eventRewardItems = 5;
+    string startDate = 6;
+    string endDate = 7;
 }
 
 message CreateEventRequest {
@@ -66,4 +70,18 @@ message FindEventsRequest {
 
 message FindEventsResponse {
     repeated Event events = 1;
+}
+
+message FindEventByIdRequest {
+    string eventId = 1;
+}
+
+message FindEventByIdResponse {
+    string id = 1;
+    string title = 2;
+    EventCondition eventCondition = 3;
+    repeated EventReward eventRewardItems = 4;
+    string startDate = 5;
+    string endDate = 6;
+    bool isActive = 7;
 }

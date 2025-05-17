@@ -1,4 +1,4 @@
-import { UserRole } from './user.role';
+import { UserRole } from '@app/repo';
 
 export interface JwtPayload {
     sub: string;
