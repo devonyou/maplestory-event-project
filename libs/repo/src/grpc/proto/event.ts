@@ -49,16 +49,23 @@ export interface Event {
   id: string;
   title: string;
   isActive: boolean;
-  eventCondition: EventCondition | undefined;
-  eventRewardItems: EventReward[];
+  eventCondition:
+    | EventCondition
+    | undefined;
+  /** repeated EventReward eventRewardItems = 5; */
   startDate: string;
   endDate: string;
+}
+
+export interface EventSummary {
+  id: string;
+  title: string;
+  isActive: boolean;
 }
 
 export interface CreateEventRequest {
   title: string;
   eventCondition: EventCondition | undefined;
-  eventRewardItems: EventReward[];
   startDate: string;
   endDate: string;
   isActive: boolean;
@@ -68,19 +75,18 @@ export interface CreateEventResponse {
   id: string;
   title: string;
   eventCondition: EventCondition | undefined;
-  eventRewardItems: EventReward[];
   startDate: string;
   endDate: string;
   isActive: boolean;
 }
 
-export interface FindEventsRequest {
+export interface FindEventListRequest {
   isActive: boolean;
   status: EventStatus;
 }
 
-export interface FindEventsResponse {
-  events: Event[];
+export interface FindEventListResponse {
+  events: EventSummary[];
 }
 
 export interface FindEventByIdRequest {
@@ -102,7 +108,7 @@ export const EVENT_PACKAGE_NAME = "event";
 export interface EventServiceClient {
   createEvent(request: CreateEventRequest, metadata?: Metadata): Observable<CreateEventResponse>;
 
-  findEvents(request: FindEventsRequest, metadata?: Metadata): Observable<FindEventsResponse>;
+  findEventList(request: FindEventListRequest, metadata?: Metadata): Observable<FindEventListResponse>;
 
   findEventById(request: FindEventByIdRequest, metadata?: Metadata): Observable<FindEventByIdResponse>;
 }
@@ -113,10 +119,10 @@ export interface EventServiceController {
     metadata?: Metadata,
   ): Promise<CreateEventResponse> | Observable<CreateEventResponse> | CreateEventResponse;
 
-  findEvents(
-    request: FindEventsRequest,
+  findEventList(
+    request: FindEventListRequest,
     metadata?: Metadata,
-  ): Promise<FindEventsResponse> | Observable<FindEventsResponse> | FindEventsResponse;
+  ): Promise<FindEventListResponse> | Observable<FindEventListResponse> | FindEventListResponse;
 
   findEventById(
     request: FindEventByIdRequest,
@@ -126,7 +132,7 @@ export interface EventServiceController {
 
 export function EventServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["createEvent", "findEvents", "findEventById"];
+    const grpcMethods: string[] = ["createEvent", "findEventList", "findEventById"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("EventService", method)(constructor.prototype[method], method, descriptor);

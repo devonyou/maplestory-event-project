@@ -4,7 +4,7 @@ package event;
 
 service EventService {
     rpc CreateEvent(CreateEventRequest) returns (CreateEventResponse);
-    rpc FindEvents(FindEventsRequest) returns (FindEventsResponse);
+    rpc FindEventList(FindEventListRequest) returns (FindEventListResponse);
     rpc FindEventById(FindEventByIdRequest) returns (FindEventByIdResponse);
 }
 
@@ -39,37 +39,41 @@ message Event {
     string title = 2;
     bool isActive = 3;
     EventCondition eventCondition = 4;
-    repeated EventReward eventRewardItems = 5;
+    // repeated EventReward eventRewardItems = 5;
     string startDate = 6;
     string endDate = 7;
+}
+
+message EventSummary {
+    string id = 1;
+    string title = 2;
+    bool isActive = 3;
 }
 
 message CreateEventRequest {
     string title = 1;
     EventCondition eventCondition = 2;
-    repeated EventReward eventRewardItems = 3;
-    string startDate = 4;
-    string endDate = 5;
-    bool isActive = 6;
+    string startDate = 3;
+    string endDate = 4;
+    bool isActive = 5;
 }
 
 message CreateEventResponse {
     string id = 1;
     string title = 2;
     EventCondition eventCondition = 3;
-    repeated EventReward eventRewardItems = 4;
-    string startDate = 5;
-    string endDate = 6;
-    bool isActive = 7;
+    string startDate = 4;
+    string endDate = 5;
+    bool isActive = 6;
 }
 
-message FindEventsRequest {
+message FindEventListRequest {
     bool isActive = 1;
     EventStatus status = 2;
 }
 
-message FindEventsResponse {
-    repeated Event events = 1;
+message FindEventListResponse {
+    repeated EventSummary events = 1;
 }
 
 message FindEventByIdRequest {

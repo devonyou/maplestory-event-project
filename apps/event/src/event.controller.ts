@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { EventService } from './event.service';
-import { EventMicroService } from '@app/repo';
+import { EventConditionTypeToString, EventMicroService } from '@app/repo';
 
 @Controller()
 @EventMicroService.EventServiceControllerMethods()
@@ -12,16 +12,20 @@ export class EventController implements EventMicroService.EventServiceController
         return {
             id: event.id.toString(),
             title: event.title,
-            eventCondition: event.eventCondition,
-            eventRewardItems: event.eventRewardItems,
+            eventCondition: {
+                type: EventConditionTypeToString[event.eventCondition.type],
+                payload: event.eventCondition.payload,
+            },
             startDate: event.startDate.toISOString(),
             endDate: event.endDate.toISOString(),
             isActive: event.isActive,
         };
     }
 
-    async findEvents(request: EventMicroService.FindEventsRequest): Promise<EventMicroService.FindEventsResponse> {
-        const events = await this.eventService.findEvents(request);
+    async findEventList(
+        request: EventMicroService.FindEventListRequest,
+    ): Promise<EventMicroService.FindEventListResponse> {
+        const events = await this.eventService.findEventList(request);
         return {
             events: events.map(event => ({
                 id: event.id.toString(),

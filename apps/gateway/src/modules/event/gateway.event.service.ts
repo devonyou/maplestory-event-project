@@ -1,9 +1,8 @@
-import { EventConditionTypeToString, EventMicroService, EventRewardTypeToString } from '@app/repo';
+import { EventMicroService, StringToEventConditionType } from '@app/repo';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { CreateEventRequest } from './dto/create.event.dto';
 import { lastValueFrom } from 'rxjs';
-import { FindEventListRequest } from './dto/find.event.dto';
 
 @Injectable()
 export class GatewayEventService implements OnModuleInit {
@@ -22,22 +21,18 @@ export class GatewayEventService implements OnModuleInit {
         const stream = this.eventService.createEvent({
             ...dto,
             eventCondition: {
-                type: EventConditionTypeToString[dto.eventCondition.type],
+                type: StringToEventConditionType[dto.eventCondition.type],
                 payload: dto.eventCondition.payload,
             },
-            eventRewardItems: dto.eventRewardItems.map(item => ({
-                type: EventRewardTypeToString[item.type],
-                amount: item.amount,
-            })),
         });
         const result = await lastValueFrom(stream);
         return result;
     }
 
-    async findEvents(dto: FindEventListRequest) {
-        const stream = this.eventService.findEvents({
-            isActive: dto.isActive,
-            status: dto.status,
+    async findEventList() {
+        const stream = this.eventService.findEventList({
+            isActive: true,
+            status: EventMicroService.EventStatus.ACTIVE,
         });
         const result = await lastValueFrom(stream);
         return result;

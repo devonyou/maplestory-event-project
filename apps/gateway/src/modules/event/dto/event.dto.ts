@@ -1,8 +1,9 @@
 import { EventMicroService } from '@app/repo';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsBoolean, IsObject, IsString, ValidateNested } from 'class-validator';
+import { IsBoolean, IsObject, IsString, Validate, ValidateNested } from 'class-validator';
 import { EventCondition } from './event.condition.dto';
 import { Type } from 'class-transformer';
+import { DateValidator } from 'apps/gateway/src/common/validator/date.validator';
 
 export class EventDto implements EventMicroService.Event {
     @IsString({ message: '이벤트 ID가 올바르지 않습니다.' })
@@ -23,14 +24,14 @@ export class EventDto implements EventMicroService.Event {
     @Type(() => EventCondition)
     eventCondition: EventCondition;
 
-    @IsArray({ message: '이벤트 보상 아이템이 올바르지 않습니다.' })
-    eventRewardItems: EventMicroService.EventReward[];
+    // @IsArray({ message: '이벤트 보상 아이템이 올바르지 않습니다.' })
+    // eventRewardItems: EventMicroService.EventReward[];
 
-    @IsString({ message: '이벤트 시작일이 올바르지 않습니다.' })
+    @Validate(DateValidator, { message: '이벤트 시작일이 올바르지 않습니다.' })
     @ApiProperty({ description: '이벤트 시작일', type: String, example: '2025-05-01' })
     startDate: string;
 
-    @IsString({ message: '이벤트 종료일이 올바르지 않습니다.' })
+    @Validate(DateValidator, { message: '이벤트 종료일이 올바르지 않습니다.' })
     @ApiProperty({ description: '이벤트 종료일', type: String, example: '2025-06-30' })
     endDate: string;
 

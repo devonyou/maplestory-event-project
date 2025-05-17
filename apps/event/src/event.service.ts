@@ -13,12 +13,10 @@ export class EventService {
         return await this.eventModel.create(dto);
     }
 
-    findEvents(dto: EventMicroService.FindEventsRequest) {
-        const { isActive, status } = dto;
+    findEventList(dto: EventMicroService.FindEventListRequest) {
+        const { status } = dto;
         const filter: FilterQuery<EventDocument> = {};
         const now = new Date();
-
-        filter.isActive = isActive;
 
         if (status === EventMicroService.EventStatus.ACTIVE) {
             filter.startDate = { $lte: now };

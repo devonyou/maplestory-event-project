@@ -1,27 +1,27 @@
-import { EventStatus } from '../grpc/proto/event';
-
-export enum EventConditionType {
-    ATTENDANCE = 'ATTENDANCE',
-    CLEAR_BOSS = 'CLEAR_BOSS',
-}
+import { EventMicroService } from '../grpc';
 
 export const EventConditionTypeToString = {
-    [EventConditionType.ATTENDANCE]: 0,
-    [EventConditionType.CLEAR_BOSS]: 1,
+    [EventMicroService.EventConditionType.ATTENDANCE]: 'ATTENDANCE',
+    [EventMicroService.EventConditionType.CLEAR_BOSS]: 'CLEAR_BOSS',
 };
 
-export enum EventRewardType {
-    MAPLE_POINT = 'MAPLE_POINT',
-    MAPLE_COIN = 'MAPLE_COIN',
-}
+export const StringToEventConditionType = {
+    ['ATTENDANCE']: EventMicroService.EventConditionType.ATTENDANCE,
+    ['CLEAR_BOSS']: EventMicroService.EventConditionType.CLEAR_BOSS,
+};
 
 export const EventRewardTypeToString = {
-    [EventRewardType.MAPLE_POINT]: 0,
-    [EventRewardType.MAPLE_COIN]: 1,
+    [EventMicroService.EventRewardType.MAPLE_POINT]: 'MAPLE_POINT',
+    [EventMicroService.EventRewardType.MAPLE_COIN]: 'MAPLE_COIN',
+};
+
+export const StringToEventRewardType = {
+    ['MAPLE_POINT']: EventMicroService.EventRewardType.MAPLE_POINT,
+    ['MAPLE_COIN']: EventMicroService.EventRewardType.MAPLE_COIN,
 };
 
 export const EventStatusToString = {
-    [EventStatus.ACTIVE]: 0,
-    [EventStatus.INACTIVE]: 1,
-    [EventStatus.COMPLETED]: 2,
+    [EventMicroService.EventStatus.ACTIVE]: 'ACTIVE',
+    [EventMicroService.EventStatus.INACTIVE]: 'INACTIVE',
+    [EventMicroService.EventStatus.COMPLETED]: 'COMPLETED',
 };

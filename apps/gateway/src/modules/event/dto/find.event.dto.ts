@@ -24,4 +24,4 @@ export class FindEventListResponse {
     events: EventSummaryDto[];
 }
 
-export class FindEventResponse extends OmitType(EventDto, [] as const) {}
+export class FindEventResponse extends OmitType(EventDto, ['id', 'title', 'isActive'] as const) {}
