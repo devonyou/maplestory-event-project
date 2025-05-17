@@ -41,24 +41,17 @@ export class EventService {
                 .populate<{ rewards: EventRewardDocument[] }>('rewards')
                 .exec();
             if (!event) {
-                throw new GrpcNotFoundException('해당 ID의 이벤트가 존재하지 않습니다.1');
+                throw new GrpcNotFoundException('해당 ID의 이벤트가 존재하지 않습니다.');
             }
             return event;
         } catch (error) {
-            throw new GrpcNotFoundException('해당 ID의 이벤트가 존재하지 않습니다.2');
+            throw new GrpcNotFoundException('해당 ID의 이벤트가 존재하지 않습니다.');
         }
     }
 
     async createEventReward(request: EventMicroService.CreateEventRewardRequest) {
         const { eventId, eventReward } = request;
-        const event = await this.eventModel
-            .findById(eventId)
-            .populate<{ rewards: EventRewardDocument[] }>('rewards')
-            .exec();
-
-        if (!event) {
-            throw new GrpcNotFoundException('해당 ID의 이벤트가 존재하지 않습니다.');
-        }
+        const event = await this.findEventById(eventId);
 
         const reward = event.rewards.find(reward => reward.type === eventReward.type);
         if (reward) {

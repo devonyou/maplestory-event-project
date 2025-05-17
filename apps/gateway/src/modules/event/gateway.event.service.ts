@@ -1,4 +1,4 @@
-import { EventConditionTypeToString, EventMicroService, StringToEventConditionType } from '@app/repo';
+import { EventMicroService } from '@app/repo';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { CreateEventRequest } from './dto/create.event.dto';
@@ -21,13 +21,7 @@ export class GatewayEventService implements OnModuleInit {
     }
 
     async createEvent(dto: CreateEventRequest) {
-        const stream = this.eventService.createEvent({
-            ...dto,
-            eventCondition: {
-                type: StringToEventConditionType[dto.eventCondition.type],
-                payload: dto.eventCondition.payload,
-            },
-        });
+        const stream = this.eventService.createEvent(dto);
         const result = await lastValueFrom(stream);
         return EventMapper.toEvent(result);
     }
@@ -44,17 +38,7 @@ export class GatewayEventService implements OnModuleInit {
     async findEventById(eventId: string) {
         const stream = this.eventService.findEventById({ eventId });
         const result = await lastValueFrom(stream);
-        return {
-            id: result.id,
-            title: result.title,
-            eventCondition: {
-                type: EventConditionTypeToString[result.eventCondition.type],
-                payload: result.eventCondition.payload,
-            },
-            startDate: result.startDate,
-            endDate: result.endDate,
-            isActive: result.isActive,
-        };
+        return EventMapper.toEvent(result);
     }
 
     async createEventReward(eventId: string, body: CreateEventRewardRequest) {
