@@ -3,9 +3,9 @@ import { GatewayEventService } from './gateway.event.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../auth/decorator/auth.guard.decorator';
 import { Roles } from '../auth/decorator/roles.guard.decorator';
-import { UserRole } from '@app/repo';
 import { FindEventListResponse, FindEventResponse } from './dto/find.event.dto';
 import { CreateEventRequest, CreateEventResponse } from './dto/create.event.dto';
+import { AuthMicroService } from '@app/repo';
 
 @Controller('event')
 @ApiTags('Event')
@@ -14,7 +14,7 @@ export class GatewayEventController {
 
     @Get('')
     @Auth()
-    @Roles([UserRole.ADMIN, UserRole.OPERATOR])
+    @Roles([AuthMicroService.UserRole.ADMIN, AuthMicroService.UserRole.OPERATOR])
     @ApiResponse({ status: 200, description: '[ADMIN, OPERATOR] 이벤트 리스트 조회', type: FindEventListResponse })
     async findEventList() {
         return this.gatewayEventService.findEventList();
@@ -22,7 +22,7 @@ export class GatewayEventController {
 
     @Get(':id')
     @Auth()
-    @Roles([UserRole.ADMIN, UserRole.OPERATOR])
+    @Roles([AuthMicroService.UserRole.ADMIN, AuthMicroService.UserRole.OPERATOR])
     @ApiResponse({ status: 200, description: '[ADMIN, OPERATOR] 이벤트 조회', type: FindEventResponse })
     async findEventById(@Param('id') id: string) {
         return this.gatewayEventService.findEventById(id);
@@ -30,7 +30,7 @@ export class GatewayEventController {
 
     @Post('')
     @Auth()
-    @Roles([UserRole.ADMIN, UserRole.OPERATOR])
+    @Roles([AuthMicroService.UserRole.ADMIN, AuthMicroService.UserRole.OPERATOR])
     @ApiResponse({ status: 201, description: '[ADMIN, OPERATOR] 이벤트 생성', type: CreateEventResponse })
     async createEvent(@Body() body: CreateEventRequest) {
         return this.gatewayEventService.createEvent(body);

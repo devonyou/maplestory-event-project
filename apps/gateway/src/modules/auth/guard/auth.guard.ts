@@ -3,7 +3,7 @@ import { GatewayAuthService } from '../gateway.auth.service';
 import { Reflector } from '@nestjs/core';
 import { Auth as AuthDecorator } from '../decorator/auth.guard.decorator';
 import { JwtPayload } from '../../../types/jwt.payload';
-import { UserRole } from '@app/repo';
+import { AuthMicroService } from '@app/repo';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -33,7 +33,7 @@ export class AuthGuard implements CanActivate {
         (request.user as JwtPayload) = {
             sub: resp.payload.sub,
             type: isRefresh ? 'refresh' : 'access',
-            role: resp.payload.role as UserRole,
+            role: resp.payload.role as AuthMicroService.UserRole,
             tokenVersion: resp.payload.tokenVersion,
             email: resp.payload.email,
         };

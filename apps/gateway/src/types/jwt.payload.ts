@@ -1,9 +1,9 @@
-import { UserRole } from '@app/repo';
+import { AuthMicroService } from '@app/repo';
 
 export interface JwtPayload {
     sub: string;
     type: string;
     email: string;
-    role: UserRole;
+    role: AuthMicroService.UserRole;
     tokenVersion: number;
 }

@@ -2,14 +2,14 @@ import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@
 import { Reflector } from '@nestjs/core';
 import { Roles } from '../decorator/roles.guard.decorator';
 import { Request } from 'express';
-import { UserRole } from '@app/repo';
+import { AuthMicroService } from '@app/repo';
 
 @Injectable()
 export class RoleGuard implements CanActivate {
     constructor(private readonly reflector: Reflector) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        const roles = this.reflector.get<UserRole[]>(Roles, context.getHandler());
+        const roles = this.reflector.get<AuthMicroService.UserRole[]>(Roles, context.getHandler());
         if (roles === undefined || roles.length === 0) return true;
 
         const request = context.switchToHttp().getRequest<Request>();

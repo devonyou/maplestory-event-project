@@ -17,8 +17,8 @@ export class AuthController implements AuthMicroService.AuthServiceController {
         return result;
     }
 
-    async findUsers(request: AuthMicroService.FindUsersRequest): Promise<AuthMicroService.FindUsersResponse> {
-        const result = await this.authService.findUsers(request);
+    async findUserList(request: AuthMicroService.FindUserListRequest): Promise<AuthMicroService.FindUserListResponse> {
+        const result = await this.authService.findUserList(request);
         return {
             users: result.map(user => ({
                 email: user.email,

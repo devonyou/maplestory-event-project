@@ -21,7 +21,7 @@ export enum UserRole {
 
 export interface User {
   email: string;
-  role: number;
+  role: UserRole;
   createdAt: string;
   updatedAt: string;
 }
@@ -29,7 +29,7 @@ export interface User {
 export interface TokenPayload {
   sub: string;
   email: string;
-  role: number;
+  role: UserRole;
   tokenVersion: number;
   type: string;
 }
@@ -42,7 +42,7 @@ export interface CreateUserRequest {
 
 export interface CreateUserResponse {
   email: string;
-  role: number;
+  role: UserRole;
 }
 
 export interface SigninUserRequest {
@@ -55,10 +55,10 @@ export interface SigninUserResponse {
   refreshToken: string;
 }
 
-export interface FindUsersRequest {
+export interface FindUserListRequest {
 }
 
-export interface FindUsersResponse {
+export interface FindUserListResponse {
   users: User[];
 }
 
@@ -98,7 +98,7 @@ export interface AuthServiceClient {
 
   signinUser(request: SigninUserRequest, metadata?: Metadata): Observable<SigninUserResponse>;
 
-  findUsers(request: FindUsersRequest, metadata?: Metadata): Observable<FindUsersResponse>;
+  findUserList(request: FindUserListRequest, metadata?: Metadata): Observable<FindUserListResponse>;
 
   verifyToken(request: VerifyTokenRequest, metadata?: Metadata): Observable<VerifyTokenResponse>;
 
@@ -118,10 +118,10 @@ export interface AuthServiceController {
     metadata?: Metadata,
   ): Promise<SigninUserResponse> | Observable<SigninUserResponse> | SigninUserResponse;
 
-  findUsers(
-    request: FindUsersRequest,
+  findUserList(
+    request: FindUserListRequest,
     metadata?: Metadata,
-  ): Promise<FindUsersResponse> | Observable<FindUsersResponse> | FindUsersResponse;
+  ): Promise<FindUserListResponse> | Observable<FindUserListResponse> | FindUserListResponse;
 
   verifyToken(
     request: VerifyTokenRequest,
@@ -144,7 +144,7 @@ export function AuthServiceControllerMethods() {
     const grpcMethods: string[] = [
       "createUser",
       "signinUser",
-      "findUsers",
+      "findUserList",
       "verifyToken",
       "updateUser",
       "refreshToken",

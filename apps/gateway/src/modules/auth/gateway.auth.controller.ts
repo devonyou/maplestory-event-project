@@ -3,22 +3,26 @@ import { GatewayAuthService } from './gateway.auth.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SignupRequest, SignupResponse } from './dto/signup.dto';
 import { SigninRequest, SigninResponse } from './dto/signin.dto';
-import { FindUsersResponse, UpdateUserRequest, UpdateUserResponse } from './dto/user.dto';
 import { Auth } from './decorator/auth.guard.decorator';
 import { Roles } from './decorator/roles.guard.decorator';
 import { JwtPayload } from '../../types/jwt.payload';
 import { User } from './decorator/user.decorator';
-import { UserRole } from '@app/repo';
+import { FindUsersResponse } from './dto/find.user.dto';
+import { UpdateUserRequest, UpdateUserResponse } from './dto/update.user.dto';
+import { AuthMicroService } from '@app/repo';
 
 @Controller('auth')
-@ApiTags('auth')
+@ApiTags('Auth')
 export class GatewayAuthController {
     constructor(private readonly authService: GatewayAuthService) {}
 
     @Get('')
     @ApiResponse({ status: 200, description: '[전체] 유저 목록 조회', type: FindUsersResponse })
-    findUsers(): Promise<FindUsersResponse> {
-        return this.authService.findUsers();
+    async findUserList(): Promise<FindUsersResponse> {
+        const result = await this.authService.findUserList();
+        return {
+            users: result,
+        };
     }
 
     @Post('signup')
@@ -35,7 +39,7 @@ export class GatewayAuthController {
 
     @Patch('')
     @Auth()
-    @Roles([UserRole.ADMIN])
+    @Roles([AuthMicroService.UserRole.ADMIN])
     @ApiResponse({ status: 200, description: '[ADMIN] 유저 정보(권한) 수정', type: UpdateUserResponse })
     updateUser(@Body() body: UpdateUserRequest): Promise<UpdateUserResponse> {
         return this.authService.updateUser(body);

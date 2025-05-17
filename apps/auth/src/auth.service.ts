@@ -110,7 +110,7 @@ export class AuthService {
      * @param dto 유저 목록 조회에 필요한 정보 (검색 조건)
      * @returns 조회된 유저 목록
      */
-    async findUsers(dto: AuthMicroService.FindUsersRequest): Promise<UserDocument[]> {
+    async findUserList(dto: AuthMicroService.FindUserListRequest): Promise<UserDocument[]> {
         const users = await this.userModel.find(dto).sort({ role: 1 });
         return users;
     }

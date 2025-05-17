@@ -1,39 +1,29 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsEmail, IsEnum } from 'class-validator';
-import { Type } from 'class-transformer';
-import { UserRole } from '@app/repo/grpc/proto/auth';
+import { IsEmail, IsEnum, IsString, MaxLength, MinLength } from 'class-validator';
+import { AuthMicroService } from '@app/repo';
 
-export class User {
+export class UserDto implements AuthMicroService.User {
+    @IsEmail({}, { message: '이메일이 올바르지 않습니다.' })
     @ApiProperty({ description: '이메일', type: String, example: 'admin@nexon.com' })
     email: string;
 
-    @ApiProperty({ description: '권한', type: Number, example: UserRole.ADMIN, enum: UserRole })
-    role: UserRole;
-}
+    @IsString({ message: '비밀번호는 문자열이어야 합니다.' })
+    @MinLength(4, { message: '비밀번호는 최소 4자 이상이어야 합니다.' })
+    @MaxLength(20, { message: '비밀번호는 최대 20자 이하여야 합니다.' })
+    password?: string;
 
-export class FindUsersRequest {}
+    @ApiProperty({
+        description: '권한',
+        type: Number,
+        example: AuthMicroService.UserRole.ADMIN,
+        enum: AuthMicroService.UserRole,
+    })
+    @IsEnum(AuthMicroService.UserRole, { message: `올바른 권한 값이 아닙니다. [USER, OPERATOR, AUDITOR, ADMIN]` })
+    role: AuthMicroService.UserRole;
 
-export class FindUsersResponse {
-    @ApiProperty({ description: '유저 목록', type: [User] })
-    @IsArray()
-    @Type(() => User)
-    users: User[];
-}
+    @ApiProperty({ description: '생성일', type: String, example: '2025-05-01' })
+    createdAt: string;
 
-export class UpdateUserRequest {
-    @ApiProperty({ description: '이메일', type: String, example: 'admin@nexon.com' })
-    @IsEmail()
-    email: string;
-
-    @ApiProperty({ description: '권한', type: Number, example: UserRole.ADMIN, enum: UserRole })
-    @IsEnum(UserRole)
-    role: UserRole;
-}
-
-export class UpdateUserResponse {
-    @ApiProperty({ description: '이메일', type: String, example: 'admin@nexon.com' })
-    email: string;
-
-    @ApiProperty({ description: '권한', type: Number, example: UserRole.ADMIN, enum: UserRole })
-    role: UserRole;
+    @ApiProperty({ description: '수정일', type: String, example: '2025-05-01' })
+    updatedAt: string;
 }
