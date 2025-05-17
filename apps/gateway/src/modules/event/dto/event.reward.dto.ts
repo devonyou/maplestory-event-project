@@ -2,7 +2,7 @@ import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { EventMicroService } from '@app/repo';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateEventRewardDto {
+export class EventRewardDto {
     // @IsNotEmpty()
     // @IsString({ message: 'eventId는 문자열이어야 합니다.' })
     // @ApiProperty({ description: '이벤트 ID', type: String, example: '1234' })

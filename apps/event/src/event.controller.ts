@@ -30,12 +30,6 @@ export class EventController implements EventMicroService.EventServiceController
             events: events.map(event => ({
                 id: event.id.toString(),
                 title: event.title,
-                eventCondition: event.eventCondition,
-                // eventRewardItems: event.eventRewardItems,
-                eventRewardItems: null,
-                startDate: event.startDate.toISOString(),
-                endDate: event.endDate.toISOString(),
-                isActive: event.isActive,
             })),
         };
     }
@@ -48,8 +42,11 @@ export class EventController implements EventMicroService.EventServiceController
             id: event.id.toString(),
             title: event.title,
             eventCondition: event.eventCondition,
-            // eventRewardItems: event.eventRewardItems,
-            eventRewardItems: null,
+            eventRewardItems: event?.rewards?.map(reward => ({
+                id: reward._id.toString(),
+                type: reward.type,
+                amount: reward.amount,
+            })),
             startDate: event.startDate.toISOString(),
             endDate: event.endDate.toISOString(),
             isActive: event.isActive,

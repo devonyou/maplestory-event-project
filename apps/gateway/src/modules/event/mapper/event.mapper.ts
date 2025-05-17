@@ -1,4 +1,4 @@
-import { EventConditionTypeToString, EventMicroService } from '@app/repo';
+import { EventConditionTypeToString, EventMicroService, EventRewardTypeToString } from '@app/repo';
 
 export class EventMapper {
     static toEvent(dto: EventMicroService.CreateEventResponse): EventMicroService.CreateEventResponse {
@@ -17,10 +17,20 @@ export class EventMapper {
 
     static toEventList(dto: EventMicroService.FindEventListResponse): EventMicroService.FindEventListResponse {
         return {
-            events: dto.events.map(event => ({
+            events: dto.events?.map(event => ({
                 id: event.id.toString(),
                 title: event.title,
-                isActive: event.isActive,
+            })),
+        };
+    }
+
+    static toEventDetail(dto: EventMicroService.FindEventByIdResponse): EventMicroService.FindEventByIdResponse {
+        return {
+            ...this.toEvent(dto),
+            eventRewardItems: dto.eventRewardItems?.map(item => ({
+                id: item.id.toString(),
+                type: EventRewardTypeToString[item.type],
+                amount: item.amount,
             })),
         };
     }

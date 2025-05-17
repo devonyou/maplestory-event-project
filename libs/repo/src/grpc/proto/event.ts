@@ -61,7 +61,6 @@ export interface Event {
 export interface EventSummary {
   id: string;
   title: string;
-  isActive: boolean;
 }
 
 export interface CreateEventRequest {

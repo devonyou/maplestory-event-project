@@ -3,8 +3,9 @@ import { EventMicroService } from '@app/repo';
 import { ApiProperty, OmitType, PickType } from '@nestjs/swagger';
 import { EventDto } from './event.dto';
 import { Type } from 'class-transformer';
+import { EventRewardDto } from './event.reward.dto';
 
-export class EventSummaryDto extends PickType(EventDto, ['id', 'title', 'isActive'] as const) {}
+export class EventSummaryDto extends PickType(EventDto, ['id', 'title'] as const) {}
 
 export class FindEventListRequest {
     @IsBoolean({ message: '활성화 여부가 올바르지 않습니다.' })
@@ -24,4 +25,10 @@ export class FindEventListResponse {
     events: EventSummaryDto[];
 }
 
-export class FindEventResponse extends OmitType(EventDto, ['id', 'title', 'isActive'] as const) {}
+export class FindEventResponse extends OmitType(EventDto, [] as const) {
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => EventRewardDto)
+    @ApiProperty({ description: '이벤트 보상 목록', type: [EventRewardDto] })
+    eventRewardItems: EventRewardDto[];
+}

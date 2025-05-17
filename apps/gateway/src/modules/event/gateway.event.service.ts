@@ -38,7 +38,7 @@ export class GatewayEventService implements OnModuleInit {
     async findEventById(eventId: string) {
         const stream = this.eventService.findEventById({ eventId });
         const result = await lastValueFrom(stream);
-        return EventMapper.toEvent(result);
+        return EventMapper.toEventDetail(result);
     }
 
     async createEventReward(eventId: string, body: CreateEventRewardRequest) {

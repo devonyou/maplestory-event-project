@@ -49,7 +49,6 @@ message Event {
 message EventSummary {
     string id = 1;
     string title = 2;
-    bool isActive = 3;
 }
 
 message CreateEventRequest {

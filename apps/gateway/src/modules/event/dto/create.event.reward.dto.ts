@@ -1,7 +1,7 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { CreateEventRewardDto } from './event.reward.dto';
+import { EventRewardDto } from './event.reward.dto';
 
-export class CreateEventRewardRequest extends PickType(CreateEventRewardDto, ['type', 'amount']) {}
+export class CreateEventRewardRequest extends PickType(EventRewardDto, ['type', 'amount']) {}
 
 export class CreateEventRewardResponse {
     @ApiProperty({ description: '이벤트 ID', type: String, example: '1234' })
@@ -12,8 +12,8 @@ export class CreateEventRewardResponse {
 
     @ApiProperty({
         description: '이벤트 보상',
-        type: CreateEventRewardDto,
+        type: EventRewardDto,
         example: { eventId: '1234', type: 'MAPLE_POINT', amount: 1000 },
     })
-    eventReward: CreateEventRewardDto;
+    eventReward: EventRewardDto;
 }
