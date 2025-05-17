@@ -1,8 +1,11 @@
-import { EventMicroService, StringToEventConditionType } from '@app/repo';
+import { EventConditionTypeToString, EventMicroService, StringToEventConditionType } from '@app/repo';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { CreateEventRequest } from './dto/create.event.dto';
 import { lastValueFrom } from 'rxjs';
+import { CreateEventRewardRequest } from './dto/create.event.reward.dto';
+import { EventMapper } from './mapper/event.mapper';
+import { EventRewardMapper } from './mapper/event.reward.mapper';
 
 @Injectable()
 export class GatewayEventService implements OnModuleInit {
@@ -26,7 +29,7 @@ export class GatewayEventService implements OnModuleInit {
             },
         });
         const result = await lastValueFrom(stream);
-        return result;
+        return EventMapper.toEvent(result);
     }
 
     async findEventList() {
@@ -35,12 +38,35 @@ export class GatewayEventService implements OnModuleInit {
             status: EventMicroService.EventStatus.ACTIVE,
         });
         const result = await lastValueFrom(stream);
-        return result;
+        return EventMapper.toEventList(result);
     }
 
     async findEventById(eventId: string) {
         const stream = this.eventService.findEventById({ eventId });
         const result = await lastValueFrom(stream);
-        return result;
+        return {
+            id: result.id,
+            title: result.title,
+            eventCondition: {
+                type: EventConditionTypeToString[result.eventCondition.type],
+                payload: result.eventCondition.payload,
+            },
+            startDate: result.startDate,
+            endDate: result.endDate,
+            isActive: result.isActive,
+        };
+    }
+
+    async createEventReward(eventId: string, body: CreateEventRewardRequest) {
+        const stream = this.eventService.createEventReward({
+            eventId,
+            eventReward: {
+                id: null,
+                type: body.type,
+                amount: body.amount,
+            },
+        });
+        const result = await lastValueFrom(stream);
+        return EventRewardMapper.toEventReward(result);
     }
 }

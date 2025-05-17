@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import validationSchema from './common/config/validation.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { EventDocument, EventSchema } from './document/event.document';
+import { EventRewardDocument, EventRewardSchema } from './document/event.reward.document';
 
 @Module({
     imports: [
@@ -21,7 +22,10 @@ import { EventDocument, EventSchema } from './document/event.document';
             inject: [ConfigService],
         }),
 
-        MongooseModule.forFeature([{ name: EventDocument.name, schema: EventSchema }]),
+        MongooseModule.forFeature([
+            { name: EventDocument.name, schema: EventSchema },
+            { name: EventRewardDocument.name, schema: EventRewardSchema },
+        ]),
     ],
     controllers: [EventController],
     providers: [EventService],

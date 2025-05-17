@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { EventService } from './event.service';
-import { EventConditionTypeToString, EventMicroService } from '@app/repo';
+import { EventMicroService } from '@app/repo';
 
 @Controller()
 @EventMicroService.EventServiceControllerMethods()
@@ -13,7 +13,7 @@ export class EventController implements EventMicroService.EventServiceController
             id: event.id.toString(),
             title: event.title,
             eventCondition: {
-                type: EventConditionTypeToString[event.eventCondition.type],
+                type: event.eventCondition.type,
                 payload: event.eventCondition.payload,
             },
             startDate: event.startDate.toISOString(),
@@ -31,7 +31,8 @@ export class EventController implements EventMicroService.EventServiceController
                 id: event.id.toString(),
                 title: event.title,
                 eventCondition: event.eventCondition,
-                eventRewardItems: event.eventRewardItems,
+                // eventRewardItems: event.eventRewardItems,
+                eventRewardItems: null,
                 startDate: event.startDate.toISOString(),
                 endDate: event.endDate.toISOString(),
                 isActive: event.isActive,
@@ -47,10 +48,28 @@ export class EventController implements EventMicroService.EventServiceController
             id: event.id.toString(),
             title: event.title,
             eventCondition: event.eventCondition,
-            eventRewardItems: event.eventRewardItems,
+            // eventRewardItems: event.eventRewardItems,
+            eventRewardItems: null,
             startDate: event.startDate.toISOString(),
             endDate: event.endDate.toISOString(),
             isActive: event.isActive,
+        };
+    }
+
+    async createEventReward(
+        request: EventMicroService.CreateEventRewardRequest,
+    ): Promise<EventMicroService.CreateEventRewardResponse> {
+        const eventReward = await this.eventService.createEventReward(request);
+        const event = await this.eventService.findEventById(eventReward.eventId.toString());
+
+        return {
+            eventId: eventReward.eventId.toString(),
+            eventTitle: event.title,
+            eventReward: {
+                id: eventReward.id.toString(),
+                type: eventReward.type,
+                amount: eventReward.amount,
+            },
         };
     }
 }

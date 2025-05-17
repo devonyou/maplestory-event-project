@@ -15,7 +15,7 @@ export class UserDto implements AuthMicroService.User {
     @ApiProperty({
         description: '권한',
         type: Number,
-        example: AuthMicroService.UserRole.ADMIN,
+        example: 'ADMIN',
         enum: AuthMicroService.UserRole,
     })
     @IsEnum(AuthMicroService.UserRole, { message: `올바른 권한 값이 아닙니다. [USER, OPERATOR, AUDITOR, ADMIN]` })

@@ -6,6 +6,7 @@ service EventService {
     rpc CreateEvent(CreateEventRequest) returns (CreateEventResponse);
     rpc FindEventList(FindEventListRequest) returns (FindEventListResponse);
     rpc FindEventById(FindEventByIdRequest) returns (FindEventByIdResponse);
+    rpc CreateEventReward(CreateEventRewardRequest) returns (CreateEventRewardResponse);
 }
 
 enum EventConditionType {
@@ -30,8 +31,9 @@ message EventCondition {
 }
 
 message EventReward {
-    EventRewardType type = 1;
-    int32 amount = 2;
+    string id = 1;
+    EventRewardType type = 2;
+    int32 amount = 3;
 }
 
 message Event {
@@ -89,3 +91,15 @@ message FindEventByIdResponse {
     string endDate = 6;
     bool isActive = 7;
 }
+
+message CreateEventRewardRequest {
+    string eventId = 1;
+    EventReward eventReward = 2;
+}
+
+message CreateEventRewardResponse {
+    string eventId = 1;
+    string eventTitle = 2;
+    EventReward eventReward = 3;
+}
+

@@ -41,6 +41,7 @@ export interface EventCondition_PayloadEntry {
 }
 
 export interface EventReward {
+  id: string;
   type: EventRewardType;
   amount: number;
 }
@@ -103,6 +104,17 @@ export interface FindEventByIdResponse {
   isActive: boolean;
 }
 
+export interface CreateEventRewardRequest {
+  eventId: string;
+  eventReward: EventReward | undefined;
+}
+
+export interface CreateEventRewardResponse {
+  eventId: string;
+  eventTitle: string;
+  eventReward: EventReward | undefined;
+}
+
 export const EVENT_PACKAGE_NAME = "event";
 
 export interface EventServiceClient {
@@ -111,6 +123,8 @@ export interface EventServiceClient {
   findEventList(request: FindEventListRequest, metadata?: Metadata): Observable<FindEventListResponse>;
 
   findEventById(request: FindEventByIdRequest, metadata?: Metadata): Observable<FindEventByIdResponse>;
+
+  createEventReward(request: CreateEventRewardRequest, metadata?: Metadata): Observable<CreateEventRewardResponse>;
 }
 
 export interface EventServiceController {
@@ -128,11 +142,16 @@ export interface EventServiceController {
     request: FindEventByIdRequest,
     metadata?: Metadata,
   ): Promise<FindEventByIdResponse> | Observable<FindEventByIdResponse> | FindEventByIdResponse;
+
+  createEventReward(
+    request: CreateEventRewardRequest,
+    metadata?: Metadata,
+  ): Promise<CreateEventRewardResponse> | Observable<CreateEventRewardResponse> | CreateEventRewardResponse;
 }
 
 export function EventServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["createEvent", "findEventList", "findEventById"];
+    const grpcMethods: string[] = ["createEvent", "findEventList", "findEventById", "createEventReward"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("EventService", method)(constructor.prototype[method], method, descriptor);

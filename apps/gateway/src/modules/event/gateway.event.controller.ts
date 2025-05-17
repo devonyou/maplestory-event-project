@@ -6,6 +6,7 @@ import { Roles } from '../auth/decorator/roles.guard.decorator';
 import { FindEventListResponse, FindEventResponse } from './dto/find.event.dto';
 import { CreateEventRequest, CreateEventResponse } from './dto/create.event.dto';
 import { AuthMicroService } from '@app/repo';
+import { CreateEventRewardRequest, CreateEventRewardResponse } from './dto/create.event.reward.dto';
 
 @Controller('event')
 @ApiTags('Event')
@@ -34,5 +35,13 @@ export class GatewayEventController {
     @ApiResponse({ status: 201, description: '[ADMIN, OPERATOR] 이벤트 생성', type: CreateEventResponse })
     async createEvent(@Body() body: CreateEventRequest) {
         return this.gatewayEventService.createEvent(body);
+    }
+
+    @Post(':id/reward')
+    @Auth()
+    @Roles([AuthMicroService.UserRole.ADMIN, AuthMicroService.UserRole.OPERATOR])
+    @ApiResponse({ status: 201, description: '[ADMIN, OPERATOR] 이벤트 보상 생성', type: CreateEventRewardResponse })
+    async createEventReward(@Param('id') eventId: string, @Body() body: CreateEventRewardRequest) {
+        return this.gatewayEventService.createEventReward(eventId, body);
     }
 }

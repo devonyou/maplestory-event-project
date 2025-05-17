@@ -1,9 +1,13 @@
 import { EventRewardType } from '@app/repo/grpc/proto/event';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import mongoose, { ObjectId, Document } from 'mongoose';
 
-@Schema({ _id: false })
-export class EventRewardDocument {
-    @Prop({ required: true, enum: EventRewardType })
+@Schema({ timestamps: true })
+export class EventRewardDocument extends Document<ObjectId> {
+    @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Event' })
+    eventId: ObjectId;
+
+    @Prop({ enum: EventRewardType, required: true })
     type: EventRewardType;
 
     @Prop({ required: true })
