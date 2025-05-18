@@ -18,18 +18,18 @@ export class GatewayEventController {
 
     @Get('')
     @Auth()
-    @Roles([AuthMicroService.UserRole.ADMIN, AuthMicroService.UserRole.OPERATOR])
-    @ApiOperation({ summary: '[ADMIN, OPERATOR] 이벤트 리스트 조회' })
-    @ApiResponse({ status: 200, description: '[ADMIN, OPERATOR] 이벤트 리스트 조회', type: FindEventListResponse })
+    // @Roles([AuthMicroService.UserRole.ADMIN, AuthMicroService.UserRole.OPERATOR])
+    @ApiOperation({ summary: '[전체] 이벤트 리스트 조회' })
+    @ApiResponse({ status: 200, description: '[전체] 이벤트 리스트 조회', type: FindEventListResponse })
     async findEventList() {
         return this.gatewayEventService.findEventList();
     }
 
     @Get(':id')
     @Auth()
-    @Roles([AuthMicroService.UserRole.ADMIN, AuthMicroService.UserRole.OPERATOR])
-    @ApiOperation({ summary: '[ADMIN, OPERATOR] 이벤트 조회' })
-    @ApiResponse({ status: 200, description: '[ADMIN, OPERATOR] 이벤트 조회', type: FindEventResponse })
+    // @Roles([AuthMicroService.UserRole.ADMIN, AuthMicroService.UserRole.OPERATOR])
+    @ApiOperation({ summary: '[전체] 이벤트 조회' })
+    @ApiResponse({ status: 200, description: '[전체] 이벤트 조회', type: FindEventResponse })
     async findEventById(@Param('id') id: string) {
         return this.gatewayEventService.findEventById(id);
     }

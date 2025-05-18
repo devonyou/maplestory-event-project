@@ -98,60 +98,44 @@ export class EventService implements OnModuleInit {
         // 이벤트 보상 조회
         const rewards = event.rewards;
         if (!rewards?.length) {
-            await this.rejectParticipateEvent({
+            return await this.rejectParticipateEvent({
                 event,
                 rewardType,
                 userId,
                 rejectedReason: '보상이 등록되지 않은 이벤트 입니다. 관리자에게 문의해주세요.',
             });
-            return {
-                status: EventMicroService.EventParticipateStatus.REJECTED,
-                message: '보상이 등록되지 않은 이벤트 입니다. 관리자에게 문의해주세요.',
-            };
         }
 
         // 이벤트 기간 검증
         const now = new Date();
         if (now < startDate || now > endDate) {
-            await this.rejectParticipateEvent({
+            return await this.rejectParticipateEvent({
                 event,
                 rewardType,
                 userId,
                 rejectedReason: '이벤트 기간이 아닙니다.',
             });
-            return {
-                status: EventMicroService.EventParticipateStatus.REJECTED,
-                message: '이벤트 기간이 아닙니다.',
-            };
         }
 
         // 이벤트 활성화
         if (!event.isActive) {
-            await this.rejectParticipateEvent({
+            return await this.rejectParticipateEvent({
                 event,
                 rewardType,
                 userId,
                 rejectedReason: '이벤트가 활성화 상태가 아닙니다.',
             });
-            return {
-                status: EventMicroService.EventParticipateStatus.REJECTED,
-                message: '이벤트가 활성화 상태가 아닙니다.',
-            };
         }
 
         // 이벤트 참여 조회
         const participateEvent = await this.findParticipateEvent(eventId, userId);
         if (participateEvent) {
-            await this.rejectParticipateEvent({
+            return await this.rejectParticipateEvent({
                 event,
                 rewardType,
                 userId,
                 rejectedReason: '보상 수령 이력이 존재합니다.',
             });
-            return {
-                status: EventMicroService.EventParticipateStatus.REJECTED,
-                message: '보상 수령 이력이 존재합니다.',
-            };
         }
 
         // 이벤트 조건 검증
@@ -159,46 +143,34 @@ export class EventService implements OnModuleInit {
             // 보스 클리어 조회
             const bossClear = await this.findBossClear(event.eventCondition.payload.bossid, userId, startDate, endDate);
             if (!bossClear.isCleared) {
-                await this.rejectParticipateEvent({
+                return await this.rejectParticipateEvent({
                     event,
                     rewardType,
                     userId,
                     rejectedReason: `이벤트 기간 내 ${event.eventCondition.payload.bossid} 보스를 처리해야 참여할 수 있습니다.`,
                 });
-                return {
-                    status: EventMicroService.EventParticipateStatus.REJECTED,
-                    message: `이벤트 기간 내 ${event.eventCondition.payload.bossid} 보스를 처리해야 참여할 수 있습니다.`,
-                };
             }
         } else if (event.eventCondition.type === EventMicroService.EventConditionType.ATTENDANCE) {
             // 출석 조회
             const attendance = await this.findAttendance(userId, startDate, endDate);
             if (attendance.attendanceDays < event.eventCondition.payload.days) {
-                await this.rejectParticipateEvent({
+                return await this.rejectParticipateEvent({
                     event,
                     rewardType,
                     userId,
                     rejectedReason: `이벤트 기간 내 출석체크 조건이 충족하지 않습니다. (${attendance.attendanceDays}/${event.eventCondition.payload.days})`,
                 });
-                return {
-                    status: EventMicroService.EventParticipateStatus.REJECTED,
-                    message: `이벤트 기간 내 출석체크 조건이 충족하지 않습니다. (${attendance.attendanceDays}/${event.eventCondition.payload.days})`,
-                };
             }
         }
 
         const reward = rewards.find(reward => reward.type === rewardType);
         if (!reward) {
-            await this.rejectParticipateEvent({
+            return await this.rejectParticipateEvent({
                 event,
                 rewardType,
                 userId,
                 rejectedReason: `해당 이벤트에 ${EventRewardTypeToString[rewardType]} 보상이 존재하지 않습니다.`,
             });
-            return {
-                status: EventMicroService.EventParticipateStatus.REJECTED,
-                message: `해당 이벤트에 ${EventRewardTypeToString[rewardType]} 보상이 존재하지 않습니다.`,
-            };
         }
 
         // 보상 수령
@@ -263,5 +235,10 @@ export class EventService implements OnModuleInit {
             status: EventMicroService.EventParticipateStatus.REJECTED,
             rewardType,
         });
+
+        return {
+            status: EventMicroService.EventParticipateStatus.REJECTED,
+            message: rejectedReason,
+        };
     }
 }

@@ -75,7 +75,7 @@ export class EventController implements EventMicroService.EventServiceController
     ): Promise<EventMicroService.ParticipateEventResponse> {
         const eventParticipate = await this.eventService.participateEvent(request);
         return {
-            status: eventParticipate
+            status: eventParticipate.status
                 ? EventMicroService.EventParticipateStatus.SUCCESS
                 : EventMicroService.EventParticipateStatus.REJECTED,
             message: eventParticipate.message,
