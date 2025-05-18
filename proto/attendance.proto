@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package attendance;
+
+service AttendanceService {
+    rpc CheckAttendance(CheckAttendanceRequest) returns (CheckAttendanceResponse);
+    rpc FindAttendance(FindAttendanceRequest) returns (FindAttendanceResponse);
+}
+
+message CheckAttendanceRequest {
+    string userId = 1;
+    string attendanceDate = 2;
+}
+
+message CheckAttendanceResponse {
+    bool isChecked = 1;
+}
+
+message FindAttendanceRequest {
+    string userId = 1;
+    string startDate = 2;
+    string endDate = 3;
+}
+
+message FindAttendanceResponse {
+    bool isChecked = 1;
+}

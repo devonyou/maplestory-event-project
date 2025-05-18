@@ -11,4 +11,8 @@ export default Joi.object({
     AUTH_GRPC_PORT: Joi.number().required(),
     EVENT_GRPC_HOST: Joi.string().required(),
     EVENT_GRPC_PORT: Joi.number().required(),
+    BOSS_GRPC_HOST: Joi.string().required(),
+    BOSS_GRPC_PORT: Joi.number().required(),
+    ATTENDANCE_GRPC_HOST: Joi.string().required(),
+    ATTENDANCE_GRPC_PORT: Joi.number().required(),
 });

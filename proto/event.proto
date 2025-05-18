@@ -7,6 +7,7 @@ service EventService {
     rpc FindEventList(FindEventListRequest) returns (FindEventListResponse);
     rpc FindEventById(FindEventByIdRequest) returns (FindEventByIdResponse);
     rpc CreateEventReward(CreateEventRewardRequest) returns (CreateEventRewardResponse);
+    rpc ParticipateEvent(ParticipateEventRequest) returns (ParticipateEventResponse);
 }
 
 enum EventConditionType {
@@ -102,3 +103,14 @@ message CreateEventRewardResponse {
     EventReward eventReward = 3;
 }
 
+message ParticipateEventRequest {
+    string eventId = 1;
+    EventRewardType rewardType = 2;
+    string userId = 3;
+}
+
+message ParticipateEventResponse {
+    string eventId = 1;
+    string userId = 2;
+    EventReward eventReward = 4;
+}

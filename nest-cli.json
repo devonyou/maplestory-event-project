@@ -48,6 +48,24 @@
       "compilerOptions": {
         "tsConfigPath": "apps/event/tsconfig.app.json"
       }
+    },
+    "boss": {
+      "type": "application",
+      "root": "apps/boss",
+      "entryFile": "main",
+      "sourceRoot": "apps/boss/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/boss/tsconfig.app.json"
+      }
+    },
+    "attendance": {
+      "type": "application",
+      "root": "apps/attendance",
+      "entryFile": "main",
+      "sourceRoot": "apps/attendance/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/attendance/tsconfig.app.json"
+      }
     }
   }
 }

@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package boss;
+
+service BossService {
+    rpc ClearBoss(ClearBossRequest) returns (ClearBossResponse) {}
+    rpc FindBossClear(FindBossClearRequest) returns (FindBossClearResponse) {}
+}
+
+enum EventBossType {
+    SWOO = 0;
+    DEMIAN = 1;
+}
+
+message ClearBossRequest {
+    string userId = 1;
+    string clearDate = 2;
+    EventBossType bossId = 3;
+}
+
+message ClearBossResponse {
+    bool isCleared = 1;
+}
+
+message FindBossClearRequest {
+    string userId = 1;
+    string startDate = 2;
+    string endDate = 3;
+    EventBossType bossId = 4;
+}
+
+message FindBossClearResponse {
+    bool isCleared = 1;
+}

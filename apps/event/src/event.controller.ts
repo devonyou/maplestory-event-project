@@ -69,4 +69,9 @@ export class EventController implements EventMicroService.EventServiceController
             },
         };
     }
+
+    async participateEvent() // request: EventMicroService.ParticipateEventRequest,
+    : Promise<EventMicroService.ParticipateEventResponse> {
+        return null;
+    }
 }

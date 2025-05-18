@@ -50,6 +50,43 @@ services:
                 condition: service_healthy
             redis:
                 condition: service_healthy
+    attendance:
+        build:
+            context: .
+            dockerfile: ./apps/attendance/Dockerfile
+            target: development
+        command: npm run start:dev attendance
+        ports:
+            - '3003:3000'
+        volumes:
+            - .:/usr/src/app
+            - /usr/src/app/node_modules
+        env_file:
+            - ./apps/attendance/.env
+        depends_on:
+            mongo_attendance:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
+
+    boss:
+        build:
+            context: .
+            dockerfile: ./apps/boss/Dockerfile
+            target: development
+        command: npm run start:dev boss
+        ports:
+            - '3004:3000'
+        volumes:
+            - .:/usr/src/app
+            - /usr/src/app/node_modules
+        env_file:
+            - ./apps/boss/.env
+        depends_on:
+            mongo_boss:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
 
     mongo_auth:
         image: mongo:8
@@ -80,6 +117,40 @@ services:
         command: mongod --quiet --logpath /dev/null
         healthcheck:
             test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/event --quiet
+            interval: 5s
+            timeout: 5s
+            retries: 10
+            start_period: 5s
+
+    mongo_boss:
+        image: mongo:8
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: mongo
+            MONGO_INITDB_ROOT_PASSWORD: pass1234
+        ports:
+            - '5003:27017'
+        volumes:
+            - ./mongo/boss:/data/db
+        command: mongod --quiet --logpath /dev/null
+        healthcheck:
+            test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/boss --quiet
+            interval: 5s
+            timeout: 5s
+            retries: 10
+            start_period: 5s
+
+    mongo_attendance:
+        image: mongo:8
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: mongo
+            MONGO_INITDB_ROOT_PASSWORD: pass1234
+        ports:
+            - '5004:27017'
+        volumes:
+            - ./mongo/attendance:/data/db
+        command: mongod --quiet --logpath /dev/null
+        healthcheck:
+            test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/attendance --quiet
             interval: 5s
             timeout: 5s
             retries: 10

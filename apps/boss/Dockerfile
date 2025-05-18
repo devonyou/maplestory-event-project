@@ -8,7 +8,7 @@ COPY nest-cli.json nest-cli.json
 
 RUN npm install
 
-COPY apps/auth apps/auth
+COPY apps/boss apps/boss
 COPY libs libs
 
-CMD [ "npm", "run", "start:dev", "auth" ]
+CMD [ "npm", "run", "start:dev", "boss" ]

@@ -1,11 +1,10 @@
 import { Module, OnModuleInit } from '@nestjs/common';
-import { EventController } from './event.controller';
-import { EventService } from './event.service';
+import { BossController } from './boss.controller';
+import { BossService } from './boss.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import validationSchema from './common/config/validation.schema';
 import { MongooseModule } from '@nestjs/mongoose';
-import { EventDocument, EventSchema } from './document/event.document';
-import { EventRewardDocument, EventRewardSchema } from './document/event.reward.document';
+import { BossClearDocument, BossClearDocumentSchema } from './document/boss.clear.document';
 import mongoose from 'mongoose';
 
 @Module({
@@ -23,15 +22,12 @@ import mongoose from 'mongoose';
             inject: [ConfigService],
         }),
 
-        MongooseModule.forFeature([
-            { name: EventDocument.name, schema: EventSchema },
-            { name: EventRewardDocument.name, schema: EventRewardSchema },
-        ]),
+        MongooseModule.forFeature([{ name: BossClearDocument.name, schema: BossClearDocumentSchema }]),
     ],
-    controllers: [EventController],
-    providers: [EventService],
+    controllers: [BossController],
+    providers: [BossService],
 })
-export class EventModule implements OnModuleInit {
+export class BossModule implements OnModuleInit {
     constructor(private readonly configService: ConfigService) {}
 
     onModuleInit() {

@@ -5,7 +5,7 @@ import { EventConditionValidator } from 'apps/gateway/src/common/validator/event
 
 export class EventCondition implements EventMicroService.EventCondition {
     @IsEnum(EventMicroService.EventConditionType, { message: 'type이 올바르지 않습니다. (ATTENDANCE, CLEAR_BOSS)' })
-    @ApiProperty({ description: 'type', enum: EventMicroService.EventConditionType })
+    @ApiProperty({ description: 'type', enum: EventMicroService.EventConditionType, example: 'CLEAR_BOSS' })
     type: EventMicroService.EventConditionType;
 
     @IsObject()
