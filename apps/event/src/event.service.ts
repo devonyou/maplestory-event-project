@@ -1,4 +1,4 @@
-import { EventMicroService } from '@app/repo';
+import { EventMicroService, EventRewardTypeToString } from '@app/repo';
 import { Injectable } from '@nestjs/common';
 import { EventDocument } from './document/event.document';
 import { InjectModel } from '@nestjs/mongoose';
@@ -55,7 +55,9 @@ export class EventService {
 
         const reward = event.rewards.find(reward => reward.type === eventReward.type);
         if (reward) {
-            throw new GrpcAlreadyExistsException('해당 이벤트에 이미 존재하는 보상입니다.');
+            throw new GrpcAlreadyExistsException(
+                `해당 이벤트에 ${EventRewardTypeToString[eventReward.type]} 보상이 이미 존재합니다.`,
+            );
         }
 
         return await this.eventRewardModel.create({
