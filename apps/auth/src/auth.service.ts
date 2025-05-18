@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { UserDocument } from './document/user.document';
 import { compare, hash } from 'bcrypt';
 import {
@@ -111,7 +111,13 @@ export class AuthService {
      * @returns 조회된 유저 목록
      */
     async findUserList(dto: AuthMicroService.FindUserListRequest): Promise<UserDocument[]> {
-        const users = await this.userModel.find(dto).sort({ role: 1 });
+        const filter: FilterQuery<UserDocument> = {};
+
+        if (dto.userId) {
+            filter._id = dto.userId;
+        }
+
+        const users = await this.userModel.find(filter).sort({ role: 1 });
         return users;
     }
 

@@ -47,13 +47,13 @@ export interface EventCondition_PayloadEntry {
 }
 
 export interface EventReward {
-  id: string;
+  id?: string | undefined;
   type: EventRewardType;
   amount: number;
 }
 
 export interface Event {
-  id: string;
+  id?: string | undefined;
   title: string;
   isActive: boolean;
   eventCondition:
@@ -67,6 +67,17 @@ export interface Event {
 export interface EventSummary {
   id: string;
   title: string;
+}
+
+export interface EventParticipate {
+  id?: string | undefined;
+  event: Event | undefined;
+  userId: string;
+  status: EventParticipateStatus;
+  rewardType: EventRewardType;
+  amount: number;
+  rejectedReason: string;
+  createdAt: string;
 }
 
 export interface CreateEventRequest {
@@ -131,6 +142,16 @@ export interface ParticipateEventResponse {
   message: string;
 }
 
+export interface FindEventParticipateRequest {
+  eventId?: string | undefined;
+  userId?: string | undefined;
+  status?: EventParticipateStatus | undefined;
+}
+
+export interface FindEventParticipateResponse {
+  eventParticipates: EventParticipate[];
+}
+
 export const EVENT_PACKAGE_NAME = "event";
 
 export interface EventServiceClient {
@@ -143,6 +164,11 @@ export interface EventServiceClient {
   createEventReward(request: CreateEventRewardRequest, metadata?: Metadata): Observable<CreateEventRewardResponse>;
 
   participateEvent(request: ParticipateEventRequest, metadata?: Metadata): Observable<ParticipateEventResponse>;
+
+  findEventParticipate(
+    request: FindEventParticipateRequest,
+    metadata?: Metadata,
+  ): Observable<FindEventParticipateResponse>;
 }
 
 export interface EventServiceController {
@@ -170,6 +196,11 @@ export interface EventServiceController {
     request: ParticipateEventRequest,
     metadata?: Metadata,
   ): Promise<ParticipateEventResponse> | Observable<ParticipateEventResponse> | ParticipateEventResponse;
+
+  findEventParticipate(
+    request: FindEventParticipateRequest,
+    metadata?: Metadata,
+  ): Promise<FindEventParticipateResponse> | Observable<FindEventParticipateResponse> | FindEventParticipateResponse;
 }
 
 export function EventServiceControllerMethods() {
@@ -180,6 +211,7 @@ export function EventServiceControllerMethods() {
       "findEventById",
       "createEventReward",
       "participateEvent",
+      "findEventParticipate",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

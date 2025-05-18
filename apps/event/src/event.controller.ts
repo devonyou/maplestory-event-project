@@ -81,4 +81,22 @@ export class EventController implements EventMicroService.EventServiceController
             message: eventParticipate.message,
         };
     }
+
+    async findEventParticipate(
+        request: EventMicroService.FindEventParticipateRequest,
+    ): Promise<EventMicroService.FindEventParticipateResponse> {
+        const eventParticipates = await this.eventService.findEventParticipate(request);
+        return {
+            eventParticipates: eventParticipates.map(participate =>
+                Object.assign(participate, {
+                    createdAt: participate.createdAt.toISOString(),
+                    event: {
+                        ...participate.event,
+                        startDate: participate.event.startDate.toISOString(),
+                        endDate: participate.event.endDate.toISOString(),
+                    },
+                }),
+            ),
+        };
+    }
 }

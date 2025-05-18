@@ -1,13 +1,19 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { GatewayEventService } from './gateway.event.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../auth/decorator/auth.guard.decorator';
 import { Roles } from '../auth/decorator/roles.guard.decorator';
 import { FindEventListResponse, FindEventResponse } from './dto/find.event.dto';
 import { CreateEventRequest, CreateEventResponse } from './dto/create.event.dto';
-import { AuthMicroService, EventMicroService } from '@app/repo';
+import { AuthMicroService, EventParticipateStatusToString } from '@app/repo';
 import { CreateEventRewardRequest, CreateEventRewardResponse } from './dto/create.event.reward.dto';
-import { ParticipateEventRequest, ParticipateEventResponse } from './dto/participate.dto';
+import {
+    FindEventParticipateAdminRequest,
+    FindEventParticipateResponse,
+    FindEventParticipateUserRequest,
+    ParticipateEventRequest,
+    ParticipateEventResponse,
+} from './dto/participate.dto';
 import { User } from '../auth/decorator/user.decorator';
 import { JwtPayload } from '../../types/jwt.payload';
 
@@ -18,16 +24,45 @@ export class GatewayEventController {
 
     @Get('')
     @Auth()
-    // @Roles([AuthMicroService.UserRole.ADMIN, AuthMicroService.UserRole.OPERATOR])
     @ApiOperation({ summary: '[전체] 이벤트 리스트 조회' })
     @ApiResponse({ status: 200, description: '[전체] 이벤트 리스트 조회', type: FindEventListResponse })
     async findEventList() {
         return this.gatewayEventService.findEventList();
     }
 
+    @Get('participate')
+    @Auth()
+    @Roles([AuthMicroService.UserRole.ADMIN, AuthMicroService.UserRole.OPERATOR, AuthMicroService.UserRole.AUDITOR])
+    @ApiOperation({ summary: '[ADMIN, OPERATOR, AUDITOR] 이벤트 참여 결과 조회 (보상 요청 결과조회)' })
+    @ApiResponse({
+        status: 200,
+        description: '[ADMIN, OPERATOR, AUDITOR] 이벤트 참여 결과 조회 (보상 요청 결과조회)',
+        type: FindEventParticipateResponse,
+    })
+    async findEventParticipateAdmin(@Query() query: FindEventParticipateAdminRequest) {
+        const result = await this.gatewayEventService.findEventParticipate(query);
+        return result;
+    }
+
+    @Get('participate/user')
+    @Auth()
+    @Roles([AuthMicroService.UserRole.USER])
+    @ApiOperation({ summary: '[USER] 이벤트 참여 결과 조회 (보상 요청 결과조회)' })
+    @ApiResponse({
+        status: 200,
+        description: '[USER] 이벤트 참여 결과 조회 (보상 요청 결과조회)',
+        type: FindEventParticipateResponse,
+    })
+    async findEventParticipate(@User() user: JwtPayload, @Query() query: FindEventParticipateUserRequest) {
+        const result = await this.gatewayEventService.findEventParticipate({
+            userId: user.sub,
+            ...query,
+        });
+        return result;
+    }
+
     @Get(':id')
     @Auth()
-    // @Roles([AuthMicroService.UserRole.ADMIN, AuthMicroService.UserRole.OPERATOR])
     @ApiOperation({ summary: '[전체] 이벤트 조회' })
     @ApiResponse({ status: 200, description: '[전체] 이벤트 조회', type: FindEventResponse })
     async findEventById(@Param('id') id: string) {
@@ -63,16 +98,9 @@ export class GatewayEventController {
         @User() user: JwtPayload,
     ) {
         const result = await this.gatewayEventService.participateEvent(eventId, user.sub, body);
-        if (result.status === EventMicroService.EventParticipateStatus.REJECTED) {
-            return {
-                status: 'REJECTED',
-                message: result.message,
-            };
-        } else {
-            return {
-                status: 'SUCCESS',
-                message: result.message,
-            };
-        }
+        return {
+            status: EventParticipateStatusToString[result.status],
+            message: result.message,
+        };
     }
 }

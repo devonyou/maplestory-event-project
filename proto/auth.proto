@@ -55,6 +55,7 @@ message SigninUserResponse {
 }
 
 message FindUserListRequest {
+    optional string userId = 1;
 }
 
 message FindUserListResponse {

@@ -56,6 +56,7 @@ export interface SigninUserResponse {
 }
 
 export interface FindUserListRequest {
+  userId?: string | undefined;
 }
 
 export interface FindUserListResponse {

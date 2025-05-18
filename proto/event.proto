@@ -8,6 +8,7 @@ service EventService {
     rpc FindEventById(FindEventByIdRequest) returns (FindEventByIdResponse);
     rpc CreateEventReward(CreateEventRewardRequest) returns (CreateEventRewardResponse);
     rpc ParticipateEvent(ParticipateEventRequest) returns (ParticipateEventResponse);
+    rpc FindEventParticipate(FindEventParticipateRequest) returns (FindEventParticipateResponse);
 }
 
 enum EventConditionType {
@@ -37,13 +38,13 @@ message EventCondition {
 }
 
 message EventReward {
-    string id = 1;
+    optional string id = 1;
     EventRewardType type = 2;
     int32 amount = 3;
 }
 
 message Event {
-    string id = 1;
+    optional string id = 1;
     string title = 2;
     bool isActive = 3;
     EventCondition eventCondition = 4;
@@ -55,6 +56,17 @@ message Event {
 message EventSummary {
     string id = 1;
     string title = 2;
+}
+
+message EventParticipate {
+    optional string id = 1;
+    Event event = 2;
+    string userId = 3;
+    EventParticipateStatus status = 4;
+    EventRewardType rewardType = 5;
+    int32 amount = 6;
+    string rejectedReason = 7;
+    string createdAt = 8;
 }
 
 message CreateEventRequest {
@@ -117,4 +129,14 @@ message ParticipateEventRequest {
 message ParticipateEventResponse {
     EventParticipateStatus status = 1;
     string message = 2;
+}
+
+message FindEventParticipateRequest {
+    optional string eventId = 1;
+    optional string userId = 2;
+    optional EventParticipateStatus status = 3;
+}
+
+message FindEventParticipateResponse {
+    repeated EventParticipate eventParticipates = 1;
 }

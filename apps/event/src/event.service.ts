@@ -241,4 +241,27 @@ export class EventService implements OnModuleInit {
             message: rejectedReason,
         };
     }
+
+    async findEventParticipate(request: EventMicroService.FindEventParticipateRequest) {
+        const { eventId, userId, status } = request;
+        const filter: FilterQuery<EventParticipateDocument> = {};
+
+        if (eventId) {
+            filter.eventId = eventId;
+        }
+
+        if (userId) {
+            filter.userId = userId;
+        }
+
+        if (status === EventMicroService.EventParticipateStatus.SUCCESS) {
+            filter.status = status;
+        } else if (status === EventMicroService.EventParticipateStatus.REJECTED) {
+            filter.status = status;
+        }
+
+        if (eventId) await this.findEventById(eventId);
+
+        return this.eventParticipateModel.find(filter).populate<{ event: EventDocument }>(['event']).exec();
+    }
 }

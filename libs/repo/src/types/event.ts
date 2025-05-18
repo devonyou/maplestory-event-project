@@ -25,3 +25,13 @@ export const EventStatusToString = {
     [EventMicroService.EventStatus.INACTIVE]: 'INACTIVE',
     [EventMicroService.EventStatus.COMPLETED]: 'COMPLETED',
 };
+
+export const EventParticipateStatusToString = {
+    [EventMicroService.EventParticipateStatus.SUCCESS]: 'SUCCESS',
+    [EventMicroService.EventParticipateStatus.REJECTED]: 'REJECTED',
+};
+
+export const StringToEventParticipateStatus = {
+    ['SUCCESS']: EventMicroService.EventParticipateStatus.SUCCESS,
+    ['REJECTED']: EventMicroService.EventParticipateStatus.REJECTED,
+};
