@@ -23,5 +23,5 @@ message FindAttendanceRequest {
 }
 
 message FindAttendanceResponse {
-    bool isChecked = 1;
+    int32 attendanceDays = 1;
 }

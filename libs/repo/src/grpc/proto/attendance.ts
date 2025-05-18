@@ -27,7 +27,7 @@ export interface FindAttendanceRequest {
 }
 
 export interface FindAttendanceResponse {
-  isChecked: boolean;
+  attendanceDays: number;
 }
 
 export const ATTENDANCE_PACKAGE_NAME = "attendance";

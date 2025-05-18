@@ -1,4 +1,4 @@
-import { UserRole } from '@app/repo/grpc/proto/auth';
 import { Reflector } from '@nestjs/core';
+import { AuthMicroService } from '@app/repo';
 
-export const Roles = Reflector.createDecorator<UserRole[]>();
+export const Roles = Reflector.createDecorator<AuthMicroService.UserRole[]>();

@@ -37,6 +37,7 @@ export class AttendanceService {
             attendanceDate: { $gte: start, $lte: end },
         });
 
-        return { isChecked: !!attendance.length };
+        const attendanceDays = attendance?.length;
+        return { attendanceDays };
     }
 }

@@ -70,8 +70,15 @@ export class EventController implements EventMicroService.EventServiceController
         };
     }
 
-    async participateEvent() // request: EventMicroService.ParticipateEventRequest,
-    : Promise<EventMicroService.ParticipateEventResponse> {
-        return null;
+    async participateEvent(
+        request: EventMicroService.ParticipateEventRequest,
+    ): Promise<EventMicroService.ParticipateEventResponse> {
+        const eventParticipate = await this.eventService.participateEvent(request);
+        return {
+            status: eventParticipate
+                ? EventMicroService.EventParticipateStatus.SUCCESS
+                : EventMicroService.EventParticipateStatus.REJECTED,
+            message: eventParticipate.message,
+        };
     }
 }

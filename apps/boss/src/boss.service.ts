@@ -2,9 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { BossClearDocument } from './document/boss.clear.document';
-import { BossMicroService } from '@app/repo';
+import { BossMicroService, EventBossTypeToString } from '@app/repo';
 import { GrpcAlreadyExistsException } from 'nestjs-grpc-exceptions';
-import { EventBossTypeToString } from '@app/repo/types/boss';
 import { startOfDay, endOfDay } from 'date-fns';
 
 @Injectable()

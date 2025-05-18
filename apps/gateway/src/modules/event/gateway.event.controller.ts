@@ -5,8 +5,11 @@ import { Auth } from '../auth/decorator/auth.guard.decorator';
 import { Roles } from '../auth/decorator/roles.guard.decorator';
 import { FindEventListResponse, FindEventResponse } from './dto/find.event.dto';
 import { CreateEventRequest, CreateEventResponse } from './dto/create.event.dto';
-import { AuthMicroService } from '@app/repo';
+import { AuthMicroService, EventMicroService } from '@app/repo';
 import { CreateEventRewardRequest, CreateEventRewardResponse } from './dto/create.event.reward.dto';
+import { ParticipateEventRequest, ParticipateEventResponse } from './dto/participate.dto';
+import { User } from '../auth/decorator/user.decorator';
+import { JwtPayload } from '../../types/jwt.payload';
 
 @Controller('event')
 @ApiTags('Event')
@@ -47,5 +50,29 @@ export class GatewayEventController {
     @ApiResponse({ status: 201, description: '[ADMIN, OPERATOR] 이벤트 보상 생성', type: CreateEventRewardResponse })
     async createEventReward(@Param('id') eventId: string, @Body() body: CreateEventRewardRequest) {
         return this.gatewayEventService.createEventReward(eventId, body);
+    }
+
+    @Post(':id/participate')
+    @Auth()
+    @Roles([AuthMicroService.UserRole.USER])
+    @ApiOperation({ summary: '[USER] 이벤트 참여(보상 요청)' })
+    @ApiResponse({ status: 201, description: '[USER] 이벤트 참여(보상 요청)', type: ParticipateEventResponse })
+    async participateEvent(
+        @Param('id') eventId: string,
+        @Body() body: ParticipateEventRequest,
+        @User() user: JwtPayload,
+    ) {
+        const result = await this.gatewayEventService.participateEvent(eventId, user.sub, body);
+        if (result.status === EventMicroService.EventParticipateStatus.REJECTED) {
+            return {
+                status: 'REJECTED',
+                message: result.message,
+            };
+        } else {
+            return {
+                status: 'SUCCESS',
+                message: result.message,
+            };
+        }
     }
 }

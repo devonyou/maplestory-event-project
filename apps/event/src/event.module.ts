@@ -7,12 +7,20 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { EventDocument, EventSchema } from './document/event.document';
 import { EventRewardDocument, EventRewardSchema } from './document/event.reward.document';
 import mongoose from 'mongoose';
+import { ClientsModule } from '@nestjs/microservices';
+import { EventParticipateDocument, EventParticipateSchema } from './document/event.participate.document';
+import { grpcClients } from './common/grpc/grpc.client';
 
 @Module({
     imports: [
         ConfigModule.forRoot({
             isGlobal: true,
             validationSchema: validationSchema,
+        }),
+
+        ClientsModule.registerAsync({
+            isGlobal: true,
+            clients: [...grpcClients],
         }),
 
         MongooseModule.forRootAsync({
@@ -26,6 +34,7 @@ import mongoose from 'mongoose';
         MongooseModule.forFeature([
             { name: EventDocument.name, schema: EventSchema },
             { name: EventRewardDocument.name, schema: EventRewardSchema },
+            { name: EventParticipateDocument.name, schema: EventParticipateSchema },
         ]),
     ],
     controllers: [EventController],

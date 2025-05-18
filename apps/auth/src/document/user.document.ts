@@ -1,6 +1,6 @@
+import { AuthMicroService } from '@app/repo';
 import { Document, ObjectId } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { UserRole } from '@app/repo/grpc/proto/auth';
 
 @Schema({ timestamps: true })
 export class UserDocument extends Document<ObjectId> {
@@ -10,8 +10,8 @@ export class UserDocument extends Document<ObjectId> {
     @Prop({ required: true })
     password: string;
 
-    @Prop({ required: true, enum: UserRole })
-    role: UserRole;
+    @Prop({ required: true, enum: AuthMicroService.UserRole })
+    role: AuthMicroService.UserRole;
 
     @Prop({ required: true, default: 0 })
     tokenVersion: number;

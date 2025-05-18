@@ -50,24 +50,6 @@ services:
                 condition: service_healthy
             redis:
                 condition: service_healthy
-    attendance:
-        build:
-            context: .
-            dockerfile: ./apps/attendance/Dockerfile
-            target: development
-        command: npm run start:dev attendance
-        ports:
-            - '3003:3000'
-        volumes:
-            - .:/usr/src/app
-            - /usr/src/app/node_modules
-        env_file:
-            - ./apps/attendance/.env
-        depends_on:
-            mongo_attendance:
-                condition: service_healthy
-            redis:
-                condition: service_healthy
 
     boss:
         build:
@@ -76,7 +58,7 @@ services:
             target: development
         command: npm run start:dev boss
         ports:
-            - '3004:3000'
+            - '3003:3000'
         volumes:
             - .:/usr/src/app
             - /usr/src/app/node_modules
@@ -85,7 +67,21 @@ services:
         depends_on:
             mongo_boss:
                 condition: service_healthy
-            redis:
+    attendance:
+        build:
+            context: .
+            dockerfile: ./apps/attendance/Dockerfile
+            target: development
+        command: npm run start:dev attendance
+        ports:
+            - '3004:3000'
+        volumes:
+            - .:/usr/src/app
+            - /usr/src/app/node_modules
+        env_file:
+            - ./apps/attendance/.env
+        depends_on:
+            mongo_attendance:
                 condition: service_healthy
 
     mongo_auth:

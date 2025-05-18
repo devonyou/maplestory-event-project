@@ -6,6 +6,7 @@ import { lastValueFrom } from 'rxjs';
 import { CreateEventRewardRequest } from './dto/create.event.reward.dto';
 import { EventMapper } from './mapper/event.mapper';
 import { EventRewardMapper } from './mapper/event.reward.mapper';
+import { ParticipateEventRequest } from './dto/participate.dto';
 
 @Injectable()
 export class GatewayEventService implements OnModuleInit {
@@ -52,5 +53,15 @@ export class GatewayEventService implements OnModuleInit {
         });
         const result = await lastValueFrom(stream);
         return EventRewardMapper.toEventReward(result);
+    }
+
+    async participateEvent(eventId: string, userId: string, body: ParticipateEventRequest) {
+        const stream = this.eventService.participateEvent({
+            eventId,
+            rewardType: body.rewardType,
+            userId: userId,
+        });
+        const result = await lastValueFrom(stream);
+        return result;
     }
 }

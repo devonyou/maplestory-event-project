@@ -26,6 +26,11 @@ enum EventStatus {
     COMPLETED = 2;
 }
 
+enum EventParticipateStatus {
+    REJECTED = 0;
+    SUCCESS = 1;
+}
+
 message EventCondition {
     EventConditionType type = 1;
     map<string, string> payload = 2;
@@ -110,7 +115,6 @@ message ParticipateEventRequest {
 }
 
 message ParticipateEventResponse {
-    string eventId = 1;
-    string userId = 2;
-    EventReward eventReward = 4;
+    EventParticipateStatus status = 1;
+    string message = 2;
 }

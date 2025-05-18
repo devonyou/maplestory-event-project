@@ -3,12 +3,7 @@ import { EventMicroService } from '@app/repo';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class EventRewardDto {
-    // @IsNotEmpty()
-    // @IsString({ message: 'eventId는 문자열이어야 합니다.' })
-    // @ApiProperty({ description: '이벤트 ID', type: String, example: '1234' })
-    // eventId: string;
-
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'type은 비어있을 수 없습니다.' })
     @IsString({ message: 'type은 문자열이어야 합니다.' })
     @IsEnum(EventMicroService.EventRewardType, {
         message: 'type은 유효한 이벤트 보상 타입이어야 합니다.[MAPLE_POINT, MAPLE_COIN]',

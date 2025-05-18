@@ -30,6 +30,12 @@ export enum EventStatus {
   UNRECOGNIZED = -1,
 }
 
+export enum EventParticipateStatus {
+  REJECTED = 0,
+  SUCCESS = 1,
+  UNRECOGNIZED = -1,
+}
+
 export interface EventCondition {
   type: EventConditionType;
   payload: { [key: string]: string };
@@ -121,9 +127,8 @@ export interface ParticipateEventRequest {
 }
 
 export interface ParticipateEventResponse {
-  eventId: string;
-  userId: string;
-  eventReward: EventReward | undefined;
+  status: EventParticipateStatus;
+  message: string;
 }
 
 export const EVENT_PACKAGE_NAME = "event";
