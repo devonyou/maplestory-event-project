@@ -11,8 +11,9 @@
 
 ### 📦 시작하기
 
-**api** : [http://localhost:3000](http://localhost:3000)
-**swagger** : [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
+> **api** : [http://localhost:3000](http://localhost:3000)
+
+> **swagger** : [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
 
 ```bash
 ## sh
