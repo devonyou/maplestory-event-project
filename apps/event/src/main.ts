@@ -19,6 +19,19 @@ async function bootstrap() {
         },
     });
 
+    app.connectMicroservice<MicroserviceOptions>({
+        transport: Transport.RMQ,
+        options: {
+            urls: [configService.get<string>('RABBITMQ_URL')],
+            queue: 'event-participate-queue',
+            queueOptions: {
+                durable: true,
+            },
+            prefetchCount: 1,
+            noAck: false,
+        },
+    });
+
     await app.init();
     await app.startAllMicroservices();
 }

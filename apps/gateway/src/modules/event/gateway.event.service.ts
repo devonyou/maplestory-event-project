@@ -88,7 +88,7 @@ export class GatewayEventService implements OnModuleInit {
         const stream = this.eventService.findEventParticipate(dto);
         const result = await lastValueFrom(stream);
         return {
-            eventParticipates: result.eventParticipates.map(participate =>
+            eventParticipates: result?.eventParticipates?.map(participate =>
                 EventParticipateMapper.toEventParticipate(participate),
             ),
         };

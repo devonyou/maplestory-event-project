@@ -18,7 +18,7 @@ export class EventDto implements EventMicroService.Event {
     @ApiProperty({
         description: '이벤트 조건',
         type: EventCondition,
-        example: { type: 'CLEAR_BOSS', payload: { bossid: '스우' } },
+        example: { type: 'CLEAR_BOSS', payload: { bossid: 'SWOO' } },
     })
     @ValidateNested()
     @Type(() => EventCondition)

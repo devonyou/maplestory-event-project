@@ -41,7 +41,9 @@ export class GatewayEventController {
         type: FindEventParticipateResponse,
     })
     async findEventParticipateAdmin(@Query() query: FindEventParticipateAdminRequest) {
-        const result = await this.gatewayEventService.findEventParticipate(query);
+        const result = await this.gatewayEventService.findEventParticipate({
+            ...(query as any),
+        });
         return result;
     }
 
@@ -57,7 +59,7 @@ export class GatewayEventController {
     async findEventParticipate(@User() user: JwtPayload, @Query() query: FindEventParticipateUserRequest) {
         const result = await this.gatewayEventService.findEventParticipate({
             userId: user.sub,
-            ...query,
+            ...(query as any),
         });
         return result;
     }

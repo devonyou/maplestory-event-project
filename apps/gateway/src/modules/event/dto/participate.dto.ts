@@ -4,7 +4,6 @@ import { ObjectIdValidator } from '../../../common/validator/object.id.validator
 import { IsArray, IsEnum, IsNotEmpty, IsOptional, IsString, Validate, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { EventDto } from './event.dto';
-
 export class EventParticipate {
     @ApiProperty({ description: '유저 ID', example: '60a9b734b5d2b444c5d2b444' })
     userId: string;
@@ -38,7 +37,8 @@ export class ParticipateEventRequest {
 export class ParticipateEventResponse {
     @IsEnum(EventMicroService.EventParticipateStatus)
     @ApiProperty({ enum: EventMicroService.EventParticipateStatus, description: '참여 결과', example: 'SUCCESS' })
-    status: EventMicroService.EventParticipateStatus;
+    // status: EventMicroService.EventParticipateStatus;
+    status?: ['SUCCESS', 'REJECTED'];
 
     @ApiProperty({ description: '응답 메시지', example: '' })
     message: string;
@@ -54,8 +54,13 @@ export class FindEventParticipateUserRequest {
     @IsEnum(EventMicroService.EventParticipateStatus, {
         message: '유효한 상태코드가 아닙니다.[SUCCESS, REJECTED]',
     })
-    @ApiProperty({ description: '참여 상태', example: 'SUCCESS' })
-    status?: EventMicroService.EventParticipateStatus;
+    @ApiProperty({
+        description: '참여 상태',
+        example: 'SUCCESS',
+        type: String,
+    })
+    // status?: EventMicroService.EventParticipateStatus;
+    status?: ['SUCCESS', 'REJECTED'];
 }
 
 export class FindEventParticipateAdminRequest extends FindEventParticipateUserRequest {

@@ -10,6 +10,8 @@ import mongoose from 'mongoose';
 import { ClientsModule } from '@nestjs/microservices';
 import { EventParticipateDocument, EventParticipateSchema } from './document/event.participate.document';
 import { grpcClients } from './common/grpc/grpc.client';
+import { rabbitmqClients } from './common/rabbitmq/rabbitmq.client';
+import { EventWorkerModule } from './modules/worker/event.worker.module';
 
 @Module({
     imports: [
@@ -20,7 +22,7 @@ import { grpcClients } from './common/grpc/grpc.client';
 
         ClientsModule.registerAsync({
             isGlobal: true,
-            clients: [...grpcClients],
+            clients: [...grpcClients, ...rabbitmqClients],
         }),
 
         MongooseModule.forRootAsync({
@@ -36,6 +38,8 @@ import { grpcClients } from './common/grpc/grpc.client';
             { name: EventRewardDocument.name, schema: EventRewardSchema },
             { name: EventParticipateDocument.name, schema: EventParticipateSchema },
         ]),
+
+        EventWorkerModule,
     ],
     controllers: [EventController],
     providers: [EventService],

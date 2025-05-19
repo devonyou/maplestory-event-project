@@ -45,7 +45,7 @@ export class GatewayAuthService implements OnModuleInit {
     async findUserList() {
         const stream = this.authService.findUserList({});
         const result = await lastValueFrom(stream);
-        return result.users.map(user => ({
+        return result.users?.map(user => ({
             ...user,
             role: UserRoleToString[user.role],
             createdAt: user.createdAt,

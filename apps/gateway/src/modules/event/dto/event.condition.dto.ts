@@ -10,6 +10,6 @@ export class EventCondition implements EventMicroService.EventCondition {
 
     @IsObject()
     @Validate(EventConditionValidator)
-    @ApiProperty({ description: 'payload', type: Object, example: { bossid: '스우' } })
+    @ApiProperty({ description: 'payload', type: Object, example: { bossid: 'SWOO' } })
     payload: Record<string, any>;
 }
