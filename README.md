@@ -166,7 +166,7 @@ flowchart
     - [이벤트등록](#이벤트등록)
     - [보상생성](#보상생성)
     - [보상요청 / 이벤트참여](#보상요청)
-    - [보상결과조회](#보상결과)
+    - [보상결과조회](#보상결과조회)
 
 #### 사용자등록
 
@@ -293,14 +293,14 @@ flowchart
     }
     ```
 
-#### 보상요청
+#### 보상결과조회
 
 - **_GET_** `/event/participate`
 - **ROLES** : `ADMIN`, `OPERATOR`, `AUDITOR`
 - **필터링** (query string)
-    - eventId : string
-    - status : `SUCCESS`, `REJECTED`
-    - userId : string
+    - eventId (optional) : string
+    - status (optional) : `SUCCESS`, `REJECTED`
+    - userId (optional) : string
 - 필터링 된 모든 결과가 리스트로 출력됩니다.
 - 응답 예시
     ```javascript
