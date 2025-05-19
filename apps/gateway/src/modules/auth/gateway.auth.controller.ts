@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
 import { GatewayAuthService } from './gateway.auth.service';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SignupRequest, SignupResponse } from './dto/signup.dto';
 import { SigninRequest, SigninResponse } from './dto/signin.dto';
 import { Auth } from './decorator/auth.guard.decorator';
@@ -42,6 +42,7 @@ export class GatewayAuthController {
 
     @Patch('')
     @Auth()
+    @ApiBearerAuth()
     @Roles([AuthMicroService.UserRole.ADMIN])
     @ApiOperation({ summary: '[ADMIN] 유저 정보(권한) 수정' })
     @ApiResponse({ status: 200, description: '[ADMIN] 유저 정보(권한) 수정', type: UpdateUserResponse })
@@ -51,6 +52,7 @@ export class GatewayAuthController {
 
     @Post('refresh')
     @Auth({ isRefresh: true })
+    @ApiBearerAuth('refreshToken')
     @ApiOperation({ summary: '[전체] 토큰 갱신' })
     @ApiResponse({ status: 201, description: '[전체] 토큰 갱신', type: SigninResponse })
     refreshToken(@User() user: JwtPayload): Promise<SigninResponse> {

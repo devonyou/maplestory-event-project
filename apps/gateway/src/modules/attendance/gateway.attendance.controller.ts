@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { GatewayAttendanceService } from './gateway.attendance.service';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../auth/decorator/auth.guard.decorator';
 import { Roles } from '../auth/decorator/roles.guard.decorator';
 import { AuthMicroService } from '@app/repo';
@@ -10,6 +10,7 @@ import { CheckAttendanceRequest, CheckAttendanceResponse } from './dto/check.att
 
 @Controller('attendance')
 @ApiTags('Attendance')
+@ApiBearerAuth()
 export class GatewayAttendanceController {
     constructor(private readonly attendanceService: GatewayAttendanceService) {}
 

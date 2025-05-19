@@ -34,10 +34,31 @@ class Server {
             .setTitle(this.configService.get<string>('SWAGGER_TITLE'))
             .setDescription(this.configService.get<string>('SWAGGER_DESCRIPTION'))
             .setVersion(this.configService.get<string>('SWAGGER_VERSION'))
+            .addBearerAuth({
+                type: 'http',
+                scheme: 'bearer',
+                bearerFormat: 'JWT',
+                name: 'Authorization',
+                in: 'headers',
+            })
+            .addBearerAuth(
+                {
+                    type: 'http',
+                    scheme: 'bearer',
+                    bearerFormat: 'JWT',
+                    name: 'Authorization',
+                    in: 'headers',
+                },
+                'refreshToken',
+            )
             .build();
 
         const document = SwaggerModule.createDocument(this.app, config);
-        SwaggerModule.setup(this.configService.get<string>('SWAGGER_PATH'), this.app, document);
+        SwaggerModule.setup(this.configService.get<string>('SWAGGER_PATH'), this.app, document, {
+            swaggerOptions: {
+                persistAuthorization: true,
+            },
+        });
     }
 
     private setupCors() {

@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { GatewayEventService } from './gateway.event.service';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../auth/decorator/auth.guard.decorator';
 import { Roles } from '../auth/decorator/roles.guard.decorator';
 import { FindEventListResponse, FindEventResponse } from './dto/find.event.dto';
@@ -19,6 +19,7 @@ import { JwtPayload } from '../../types/jwt.payload';
 
 @Controller('event')
 @ApiTags('Event')
+@ApiBearerAuth()
 export class GatewayEventController {
     constructor(private readonly gatewayEventService: GatewayEventService) {}
 

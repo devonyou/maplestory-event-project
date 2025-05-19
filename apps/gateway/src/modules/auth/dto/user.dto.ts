@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsEnum, IsString, MaxLength, MinLength } from 'class-validator';
 import { AuthMicroService } from '@app/repo';
 
@@ -7,6 +7,7 @@ export class UserDto implements AuthMicroService.User {
     @ApiProperty({ description: '이메일', type: String, example: 'admin@nexon.com' })
     email: string;
 
+    @ApiHideProperty()
     @IsString({ message: '비밀번호는 문자열이어야 합니다.' })
     @MinLength(4, { message: '비밀번호는 최소 4자 이상이어야 합니다.' })
     @MaxLength(20, { message: '비밀번호는 최대 20자 이하여야 합니다.' })
