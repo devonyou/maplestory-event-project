@@ -135,7 +135,7 @@ flowchart
     event --"db"--> eventdb("EVENT MONGODB")
     boss --"db"--> bossdb("BOSS MONGODB")
     attendance --"db"--> atdb("ATTENDANCE MONGODB")
-    event --"큐"--> rabbitmq("REDIS SERVER")
+    event --"큐"--> rabbitmq("RABBIT MQ")
     rabbitmq --"memory"--> redis("REDIS SERVER")
   end
 ```
